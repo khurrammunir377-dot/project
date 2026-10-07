@@ -108,16 +108,9 @@ function LoginForm() {
           <div className="flex justify-center mb-3">
             <NexoraLogo size="lg" href="/" animated={true} />
           </div>
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/30 text-sky-400 text-xs font-semibold">
-            <GoogleIcon className="w-3.5 h-3.5" />
-            <span>Google Account Authentication Required</span>
-          </div>
-          <h2 className="text-2xl font-extrabold text-white mt-3">
+          <h2 className="text-2xl font-extrabold text-white mt-2">
             Enterprise Single Sign-On
           </h2>
-          <p className="text-xs text-slate-400 mt-1">
-            Mandatory Security Policy: All users must sign in via their Google Account to enter the ERP.
-          </p>
         </div>
 
         {/* Login Box */}
@@ -129,7 +122,7 @@ function LoginForm() {
             </div>
           )}
 
-          {/* PRIMARY GOOGLE SIGN-IN EXPERIENCE (MANDATORY) */}
+          {/* PRIMARY GOOGLE SIGN-IN EXPERIENCE */}
           <div className="space-y-3 mb-5">
             <button
               type="button"
@@ -141,12 +134,7 @@ function LoginForm() {
               <span>Sign in with Google Workspace</span>
             </button>
 
-            <div className="relative flex items-center justify-center my-4">
-              <div className="border-t border-slate-800 w-full" />
-              <span className="bg-slate-900 px-3 text-[10px] font-bold text-slate-500 uppercase tracking-wider relative">
-                Or sign in with Corporate Credentials
-              </span>
-            </div>
+            <div className="my-4 border-t border-slate-800" />
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-4">

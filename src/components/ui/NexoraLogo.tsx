@@ -1,8 +1,6 @@
 'use client';
 
 import React from 'react';
-import { useRouter } from 'next/navigation';
-import { useAuth } from '@/lib/auth/AuthContext';
 
 interface NexoraLogoProps {
   size?: 'sm' | 'md' | 'lg' | 'xl';
@@ -17,21 +15,15 @@ interface NexoraLogoProps {
 export const NexoraLogo: React.FC<NexoraLogoProps> = ({
   size = 'md',
   showText = true,
+  href = '/',
   className = '',
   animated = true,
   mode = 'icon',
 }) => {
-  const router = useRouter();
-  const { logout } = useAuth();
-
   const handleLogoClick = (e: React.MouseEvent) => {
     e.preventDefault();
-    try {
-      logout();
-    } catch (err) {
-      // ignore
-    }
-    router.push('/');
+    // Navigate straight to landing page without triggering login redirects
+    window.location.href = href || '/';
   };
 
   const sizeMap = {
@@ -91,15 +83,17 @@ export const NexoraLogo: React.FC<NexoraLogoProps> = ({
           <div className="w-24 h-full bg-gradient-to-r from-transparent via-white/70 to-transparent blur-[2px] animate-logo-sheen" />
         </div>
 
-        {/* 3D Ribbon 'N' Emblem */}
-        <div className="relative flex items-center justify-center shrink-0">
+        {/* 3D Ribbon 'N' Emblem with Stylish 3D Perspective Rotation */}
+        <div className="relative flex items-center justify-center shrink-0 [perspective:800px]">
           {animated && (
             <div className="absolute -inset-1.5 rounded-full bg-gradient-to-r from-emerald-500/25 via-sky-400/30 to-blue-500/25 blur-md opacity-80 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
           )}
           <img
             src="/logo-icon.png"
             alt="Nexora 3D Emblem"
-            className={`${selected.iconH} w-auto object-contain drop-shadow-[0_6px_16px_rgba(0,145,254,0.45)] group-hover:scale-105 transition-all duration-300`}
+            className={`${selected.iconH} w-auto object-contain drop-shadow-[0_6px_16px_rgba(0,145,254,0.45)] ${
+              animated ? 'animate-stylish-n' : ''
+            } group-hover:scale-110 transition-all duration-300`}
           />
         </div>
 
@@ -110,9 +104,12 @@ export const NexoraLogo: React.FC<NexoraLogoProps> = ({
               <span
                 className={`font-black font-sans tracking-wider leading-none uppercase ${selected.text}`}
               >
-                {/* User requested: NE in WHITE */}
+                {/* User requested: NE in WHITE with stylish rotation on N */}
                 <span className="text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)]">
-                  NE
+                  <span className={`inline-block ${animated ? 'animate-stylish-n-text' : ''}`}>
+                    N
+                  </span>
+                  E
                 </span>
                 {/* User requested: X in DARK BLUE in same 3D ribbon style as emblem N */}
                 <span className="relative inline-block font-black bg-gradient-to-b from-[#38bdf8] via-[#1d4ed8] to-[#0a1931] bg-clip-text text-transparent drop-shadow-[0_2px_6px_rgba(15,23,42,0.95)] drop-shadow-[0_0_8px_rgba(29,78,216,0.6)]">
@@ -142,7 +139,7 @@ export const NexoraLogo: React.FC<NexoraLogoProps> = ({
   return (
     <div
       onClick={handleLogoClick}
-      title="Click to logout & return to landing page"
+      title="Click to visit landing page"
       className="inline-block transition-transform active:scale-95 cursor-pointer"
       role="button"
       tabIndex={0}
