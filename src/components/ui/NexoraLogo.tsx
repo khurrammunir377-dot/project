@@ -104,12 +104,9 @@ export const NexoraLogo: React.FC<NexoraLogoProps> = ({
               <span
                 className={`font-black font-sans tracking-wider leading-none uppercase ${selected.text}`}
               >
-                {/* User requested: NE in WHITE with stylish rotation on N */}
+                {/* User requested: NE in static WHITE (not rotating) */}
                 <span className="text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)]">
-                  <span className={`inline-block ${animated ? 'animate-stylish-n-text' : ''}`}>
-                    N
-                  </span>
-                  E
+                  NE
                 </span>
                 {/* User requested: X in DARK BLUE in same 3D ribbon style as emblem N */}
                 <span className="relative inline-block font-black bg-gradient-to-b from-[#38bdf8] via-[#1d4ed8] to-[#0a1931] bg-clip-text text-transparent drop-shadow-[0_2px_6px_rgba(15,23,42,0.95)] drop-shadow-[0_0_8px_rgba(29,78,216,0.6)]">
