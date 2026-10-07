@@ -33,3 +33,26 @@ body {
 .dark ::-webkit-scrollbar-thumb {
   background: #334155;
 }
+
+/* 10-Second Periodic Bright Light Ray Sheen */
+@keyframes logo-ray-sheen {
+  0%, 80% {
+    transform: translateX(-180%) skewX(-25deg);
+    opacity: 0;
+  }
+  82% {
+    opacity: 1;
+  }
+  92% {
+    transform: translateX(280%) skewX(-25deg);
+    opacity: 1;
+  }
+  94%, 100% {
+    transform: translateX(280%) skewX(-25deg);
+    opacity: 0;
+  }
+}
+
+.animate-logo-sheen {
+  animation: logo-ray-sheen 10s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}

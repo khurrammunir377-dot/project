@@ -1,7 +1,8 @@
 'use client';
 
 import React from 'react';
-import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useAuth } from '@/lib/auth/AuthContext';
 
 interface NexoraLogoProps {
   size?: 'sm' | 'md' | 'lg' | 'xl';
@@ -16,31 +17,42 @@ interface NexoraLogoProps {
 export const NexoraLogo: React.FC<NexoraLogoProps> = ({
   size = 'md',
   showText = true,
-  href = '/',
   className = '',
   animated = true,
-  variant = 'auto',
   mode = 'icon',
 }) => {
+  const router = useRouter();
+  const { logout } = useAuth();
+
+  const handleLogoClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    try {
+      logout();
+    } catch (err) {
+      // ignore
+    }
+    router.push('/');
+  };
+
   const sizeMap = {
     sm: {
       iconH: 'h-8',
       text: 'text-lg',
-      sub: 'text-[8px] tracking-[0.2em]',
+      sub: 'text-[8.5px] tracking-[0.2em]',
       badge: 'text-[8px] px-1.5 py-0.2',
       fullH: 'h-10',
     },
     md: {
       iconH: 'h-10',
       text: 'text-2xl',
-      sub: 'text-[9px] tracking-[0.22em]',
+      sub: 'text-[9.5px] tracking-[0.22em]',
       badge: 'text-[9px] px-2 py-0.5',
       fullH: 'h-12',
     },
     lg: {
       iconH: 'h-14',
       text: 'text-3xl sm:text-4xl',
-      sub: 'text-[11px] tracking-[0.25em]',
+      sub: 'text-[11.5px] tracking-[0.25em]',
       badge: 'text-[10px] px-2.5 py-0.5',
       fullH: 'h-20',
     },
@@ -55,68 +67,69 @@ export const NexoraLogo: React.FC<NexoraLogoProps> = ({
 
   const selected = sizeMap[size];
 
-  // Text color based on variant
-  const mainTextColor =
-    variant === 'light'
-      ? 'text-white'
-      : variant === 'dark'
-      ? 'text-slate-950'
-      : 'text-slate-900 dark:text-white';
-
-  const subTextColor =
-    variant === 'light'
-      ? 'text-slate-300'
-      : variant === 'dark'
-      ? 'text-slate-500'
-      : 'text-slate-500 dark:text-slate-400';
-
   let content: React.ReactNode;
 
   if (mode === 'full') {
     content = (
-      <div className={`inline-flex items-center group select-none ${className}`}>
+      <div className={`relative inline-flex items-center group select-none cursor-pointer ${className}`}>
         <img
           src="/logo-transparent.png"
           alt="Nexora Complete Business Management"
-          className={`${selected.fullH} w-auto object-contain drop-shadow-[0_4px_12px_rgba(0,145,254,0.25)] transition-transform duration-300 group-hover:scale-105`}
+          className={`${selected.fullH} w-auto object-contain drop-shadow-[0_4px_12px_rgba(0,145,254,0.35)] transition-transform duration-300 group-hover:scale-105`}
         />
+        {/* 10-second bright light ray sweep */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none rounded-xl">
+          <div className="w-20 h-full bg-gradient-to-r from-transparent via-white/80 to-transparent blur-[2px] animate-logo-sheen" />
+        </div>
       </div>
     );
   } else {
     content = (
-      <div className={`inline-flex items-center gap-3 group select-none ${className}`}>
-        {/* Transparent 3D Ribbon 'N' Emblem */}
+      <div className={`relative inline-flex items-center gap-3 group select-none cursor-pointer ${className}`}>
+        {/* 10-Second Bright Light Ray Sheen Sweep Across Entire Logo */}
+        <div className="absolute -inset-1.5 overflow-hidden pointer-events-none rounded-2xl z-20">
+          <div className="w-24 h-full bg-gradient-to-r from-transparent via-white/70 to-transparent blur-[2px] animate-logo-sheen" />
+        </div>
+
+        {/* 3D Ribbon 'N' Emblem */}
         <div className="relative flex items-center justify-center shrink-0">
           {animated && (
-            <div className="absolute -inset-1 rounded-full bg-gradient-to-r from-blue-500/20 via-cyan-400/20 to-indigo-500/20 blur-md opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+            <div className="absolute -inset-1.5 rounded-full bg-gradient-to-r from-emerald-500/25 via-sky-400/30 to-blue-500/25 blur-md opacity-80 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
           )}
           <img
             src="/logo-icon.png"
             alt="Nexora 3D Emblem"
-            className={`${selected.iconH} w-auto object-contain drop-shadow-[0_8px_16px_rgba(0,145,254,0.3)] group-hover:scale-105 group-hover:rotate-1 transition-all duration-300`}
+            className={`${selected.iconH} w-auto object-contain drop-shadow-[0_6px_16px_rgba(0,145,254,0.45)] group-hover:scale-105 transition-all duration-300`}
           />
         </div>
 
-        {/* Corporate Typography Lockup */}
+        {/* High-Contrast Corporate Typography Lockup */}
         {showText && (
           <div className="flex flex-col text-left justify-center">
             <div className="flex items-center gap-2">
               <span
-                className={`font-black font-sans tracking-wider leading-none uppercase ${mainTextColor} ${selected.text}`}
+                className={`font-black font-sans tracking-wider leading-none uppercase ${selected.text}`}
               >
-                NE
-                <span className="bg-gradient-to-tr from-blue-600 via-sky-400 to-cyan-400 bg-clip-text text-transparent">
+                {/* User requested: NE in WHITE */}
+                <span className="text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)]">
+                  NE
+                </span>
+                {/* Bright Neon Cyan Transition */}
+                <span className="text-sky-400 drop-shadow-[0_0_10px_rgba(56,189,248,0.9)]">
                   X
                 </span>
-                ORA
+                {/* User requested: ORA in GREEN */}
+                <span className="text-emerald-400 drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)]">
+                  ORA
+                </span>
               </span>
-              <span className="font-mono font-bold tracking-widest text-[9px] px-1.5 py-0.5 rounded-full border border-sky-500/30 bg-sky-500/10 text-sky-400">
+              <span className="font-mono font-bold tracking-widest text-[9px] px-1.5 py-0.5 rounded-full border border-emerald-500/40 bg-emerald-500/15 text-emerald-300 shadow-sm">
                 ERP
               </span>
             </div>
 
             <span
-              className={`font-bold uppercase mt-1 leading-none ${subTextColor} ${selected.sub}`}
+              className={`font-bold uppercase mt-1 leading-none text-slate-200 dark:text-slate-300 drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)] ${selected.sub}`}
             >
               Complete Business Management
             </span>
@@ -126,13 +139,16 @@ export const NexoraLogo: React.FC<NexoraLogoProps> = ({
     );
   }
 
-  if (href) {
-    return (
-      <Link href={href} className="inline-block transition-opacity hover:opacity-95">
-        {content}
-      </Link>
-    );
-  }
-
-  return content;
+  return (
+    <div
+      onClick={handleLogoClick}
+      title="Click to logout & return to landing page"
+      className="inline-block transition-transform active:scale-95 cursor-pointer"
+      role="button"
+      tabIndex={0}
+    >
+      {content}
+    </div>
+  );
 };
+

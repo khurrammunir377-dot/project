@@ -363,6 +363,10 @@ export interface VisitorSession {
   ipAddress: string;
   city: string;
   province: string;
+  country?: string;
+  countryCode?: string;
+  flag?: string;
+  isp?: string;
   device: string;
   browser: string;
   os: string;
@@ -371,6 +375,7 @@ export interface VisitorSession {
   duration: string;
   status: 'Active Now' | 'Idle' | 'Left';
   timestamp: string;
+  isCurrentClient?: boolean;
 }
 
 export interface ExpenseClaim {

@@ -132,15 +132,15 @@ function LoginForm() {
           <div className="flex justify-center mb-3">
             <NexoraLogo size="lg" href="/" animated={true} />
           </div>
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-semibold">
-            <ShieldCheck className="w-3.5 h-3.5" />
-            <span>FBR &amp; SECP Verified Enterprise ERP</span>
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/30 text-sky-400 text-xs font-semibold">
+            <GoogleIcon className="w-3.5 h-3.5" />
+            <span>Google Account Authentication Required</span>
           </div>
           <h2 className="text-2xl font-extrabold text-white mt-3">
-            Sign In to Your Workspace
+            Enterprise Single Sign-On
           </h2>
           <p className="text-xs text-slate-400 mt-1">
-            Authentication Required: Continue via Google Account or Corporate Credentials
+            Mandatory Security Policy: All users must sign in via their Google Account to enter the ERP.
           </p>
         </div>
 
@@ -153,22 +153,66 @@ function LoginForm() {
             </div>
           )}
 
-          {/* PRIMARY GOOGLE SIGN-IN BUTTON */}
+          {/* PRIMARY GOOGLE SIGN-IN EXPERIENCE (MANDATORY) */}
           <div className="space-y-3 mb-5">
             <button
               type="button"
               onClick={() => setIsGoogleModalOpen(true)}
               disabled={isLoading}
-              className="w-full py-3 px-4 rounded-xl bg-white hover:bg-slate-100 active:scale-[0.99] text-slate-900 font-bold text-xs shadow-md transition-all flex items-center justify-center gap-3 border border-slate-200"
+              className="w-full py-3.5 px-4 rounded-xl bg-white hover:bg-slate-100 active:scale-[0.99] text-slate-900 font-bold text-xs shadow-lg transition-all flex items-center justify-center gap-3 border border-slate-200 ring-2 ring-blue-500/30"
             >
               <GoogleIcon className="w-4 h-4" />
-              <span>Continue with Google</span>
+              <span>Sign in with Google Workspace</span>
             </button>
+
+            {/* Quick 1-Click Google Accounts */}
+            <div className="space-y-2 pt-2">
+              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">
+                Instant Google Sign-In:
+              </span>
+              <button
+                type="button"
+                onClick={() => handleGoogleAuth('khurrammunir377@gmail.com', 'Khurram Munir')}
+                className="w-full p-2.5 rounded-xl bg-slate-950/80 hover:bg-slate-800 border border-slate-800 hover:border-emerald-500/50 flex items-center gap-3 transition-all text-left group"
+              >
+                <div className="w-8 h-8 rounded-full bg-emerald-600 text-white font-bold flex items-center justify-center text-xs shrink-0 shadow-sm">
+                  KM
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="text-xs font-bold text-white group-hover:text-emerald-400 truncate">
+                    Khurram Munir
+                  </div>
+                  <div className="text-[10px] text-slate-400 truncate">khurrammunir377@gmail.com</div>
+                </div>
+                <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 font-medium shrink-0">
+                  Google SSO
+                </span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => handleGoogleAuth('admin@nexora.pk', 'Muhammad Hamza Khan')}
+                className="w-full p-2.5 rounded-xl bg-slate-950/80 hover:bg-slate-800 border border-slate-800 hover:border-blue-500/50 flex items-center gap-3 transition-all text-left group"
+              >
+                <div className="w-8 h-8 rounded-full bg-blue-600 text-white font-bold flex items-center justify-center text-xs shrink-0 shadow-sm">
+                  HK
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="text-xs font-bold text-white group-hover:text-sky-400 truncate">
+                    Muhammad Hamza Khan (Super Admin)
+                  </div>
+                  <div className="text-[10px] text-slate-400 truncate">admin@nexora.pk</div>
+                </div>
+                <span className="text-[10px] px-2 py-0.5 rounded-full bg-blue-500/15 text-sky-400 font-medium shrink-0">
+                  Google SSO
+                </span>
+              </button>
+            </div>
 
             <div className="relative flex items-center justify-center my-4">
               <div className="border-t border-slate-800 w-full" />
               <span className="bg-slate-900 px-3 text-[10px] font-bold text-slate-500 uppercase tracking-wider relative">
-                Or Sign In With Corporate ID
+                Alternative: Emergency Admin Override
               </span>
             </div>
           </div>
@@ -229,16 +273,9 @@ function LoginForm() {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full mt-2 py-3 rounded-xl bg-emerald-500 hover:bg-emerald-400 active:scale-[0.99] text-slate-950 font-bold text-xs shadow-lg shadow-emerald-500/20 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+              className="w-full py-2.5 px-4 rounded-xl bg-slate-800 hover:bg-slate-700 active:scale-[0.99] text-slate-200 font-bold text-xs shadow-md transition-all flex items-center justify-center gap-2 border border-slate-700"
             >
-              {isLoading ? (
-                <span>Authenticating with SECP/FBR Gateway...</span>
-              ) : (
-                <>
-                  <span>Enter Nexora ERP</span>
-                  <ArrowRight className="w-4 h-4" />
-                </>
-              )}
+              Sign In with Corporate Password
             </button>
           </form>
 

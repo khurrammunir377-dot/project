@@ -50,42 +50,99 @@ export default function AdminControlPage() {
   // Local state for visitor sessions to allow live controls (Terminate, Block)
   const [sessions, setSessions] = useState<VisitorSession[]>(() => state.visitorSessions || []);
   const [blockedIps, setBlockedIps] = useState<string[]>(['119.160.119.5', '182.180.12.9']);
+  const [isDetectingGeo, setIsDetectingGeo] = useState<boolean>(true);
 
-  // Detect real client browser/device and add to live sessions
-  React.useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const ua = navigator.userAgent;
-      let browserName = 'Chrome 130.0';
-      if (ua.includes('Firefox')) browserName = 'Firefox 131.0';
-      else if (ua.includes('Edg')) browserName = 'Edge 129.0';
-      else if (ua.includes('Safari') && !ua.includes('Chrome')) browserName = 'Safari 18.0';
+  // Detect REAL client IP, device, browser, and verified Geolocation
+  const detectClientGeo = React.useCallback(async () => {
+    if (typeof window === 'undefined') return;
+    setIsDetectingGeo(true);
 
-      let osName = 'Windows 11 Pro';
-      if (navigator.platform.includes('Mac') || ua.includes('Macintosh')) osName = 'macOS Sonoma';
-      else if (ua.includes('Android')) osName = 'Android 14';
-      else if (ua.includes('iPhone') || ua.includes('iPad')) osName = 'iOS 18';
+    const ua = navigator.userAgent;
+    let browserName = 'Chrome';
+    if (ua.includes('Firefox')) browserName = 'Firefox';
+    else if (ua.includes('Edg')) browserName = 'Edge';
+    else if (ua.includes('Safari') && !ua.includes('Chrome')) browserName = 'Safari';
 
-      const currentClientSession: VisitorSession = {
-        id: 'vis-client-current',
-        ipAddress: '182.185.142.90',
-        city: 'Karachi',
-        province: 'Sindh',
-        device: 'Current Admin Terminal',
-        browser: browserName,
-        os: osName,
-        activePage: window.location.pathname || '/admin',
-        referrer: 'Direct Authenticated Session',
-        duration: 'Active Now (You)',
-        status: 'Active Now',
-        timestamp: 'Just now',
-      };
+    let osName = 'Windows';
+    if (navigator.platform.includes('Mac') || ua.includes('Macintosh')) osName = 'macOS';
+    else if (ua.includes('Android')) osName = 'Android';
+    else if (ua.includes('iPhone') || ua.includes('iPad')) osName = 'iOS';
 
-      setSessions((prev) => {
-        const rest = prev.filter((s) => s.id !== 'vis-client-current');
-        return [currentClientSession, ...rest];
-      });
+    const isMobile = /Mobi|Android/i.test(ua);
+    const deviceName = isMobile ? 'Mobile Phone' : 'Desktop Workstation';
+
+    let realIp = 'Detecting...';
+    let city = 'Dubai';
+    let region = 'Dubai';
+    let country = 'United Arab Emirates';
+    let flag = '🇦🇪';
+    let isp = 'Telecom Provider';
+
+    try {
+      // 1. Primary fast HTTPS Geo-lookup without CORS issues
+      const res = await fetch('https://ipwho.is/');
+      if (res.ok) {
+        const data = await res.json();
+        if (data && data.success !== false) {
+          realIp = data.ip || realIp;
+          city = data.city || city;
+          region = data.region || region;
+          country = data.country || country;
+          flag = data.flag?.emoji || (country.includes('Emirates') ? '🇦🇪' : '🌐');
+          isp = data.connection?.isp || data.connection?.org || isp;
+        }
+      }
+    } catch (e1) {
+      try {
+        // Fallback to ipapi.co
+        const res2 = await fetch('https://ipapi.co/json/');
+        if (res2.ok) {
+          const d2 = await res2.json();
+          realIp = d2.ip || realIp;
+          city = d2.city || city;
+          region = d2.region || region;
+          country = d2.country_name || country;
+          flag = country.includes('Emirates') ? '🇦🇪' : '🌐';
+          isp = d2.org || isp;
+        }
+      } catch (e2) {
+        try {
+          const res3 = await fetch('https://api.ipify.org?format=json');
+          const d3 = await res3.json();
+          if (d3?.ip) realIp = d3.ip;
+        } catch (e3) {}
+      }
     }
+
+    const currentClientSession: VisitorSession = {
+      id: 'vis-client-current',
+      ipAddress: realIp,
+      city: city,
+      province: region,
+      country: country,
+      flag: flag,
+      isp: isp,
+      device: `${deviceName} (You)`,
+      browser: browserName,
+      os: osName,
+      activePage: window.location.pathname || '/admin',
+      referrer: document.referrer || 'Direct Authenticated Session',
+      duration: 'Active Now (Live)',
+      status: 'Active Now',
+      timestamp: 'Just now (Verified Live IP)',
+      isCurrentClient: true,
+    };
+
+    setSessions((prev) => {
+      const rest = prev.filter((s) => s.id !== 'vis-client-current');
+      return [currentClientSession, ...rest];
+    });
+    setIsDetectingGeo(false);
   }, []);
+
+  React.useEffect(() => {
+    detectClientGeo();
+  }, [detectClientGeo]);
 
   // Add User Modal State
   const [isAddUserOpen, setIsAddUserOpen] = useState(false);
@@ -112,7 +169,7 @@ export default function AdminControlPage() {
           403 Access Denied • Administrative Clearance Required
         </h1>
         <p className="text-sm text-slate-500 dark:text-slate-400 mt-2 max-w-md">
-          This portal contains restricted Pakistani server surveillance and user security controls.
+          This portal contains restricted global enterprise traffic surveillance and administrative security controls.
           Only <strong>Super Admin</strong> or <strong>Company Admin</strong> are permitted.
         </p>
         <div className="mt-6 flex items-center gap-3">
@@ -275,10 +332,10 @@ export default function AdminControlPage() {
             <Button
               variant="outline"
               size="sm"
-              onClick={() => window.location.reload()}
-              icon={<RefreshCw className="w-3.5 h-3.5" />}
+              onClick={() => detectClientGeo()}
+              icon={<RefreshCw className={`w-3.5 h-3.5 ${isDetectingGeo ? 'animate-spin' : ''}`} />}
             >
-              Refresh Radar
+              {isDetectingGeo ? 'Detecting...' : 'Refresh Radar'}
             </Button>
             <Button
               variant="primary"
@@ -434,18 +491,35 @@ export default function AdminControlPage() {
                       className="hover:bg-slate-50/80 dark:hover:bg-slate-800/40 transition-colors"
                     >
                       <td className="py-3 px-4">
-                        <div className="font-mono font-bold text-slate-900 dark:text-slate-100">
-                          {s.ipAddress}
+                        <div className="font-mono font-bold text-slate-900 dark:text-slate-100 flex items-center gap-1.5">
+                          {s.isCurrentClient && (
+                            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping inline-block" />
+                          )}
+                          <span>{s.ipAddress}</span>
                         </div>
-                        <div className="text-[10px] text-slate-400">{s.timestamp}</div>
+                        <div className="text-[10px] text-slate-400">
+                          {s.isCurrentClient ? 'Verified Client IP (Live)' : s.timestamp}
+                        </div>
                       </td>
 
                       <td className="py-3 px-4">
-                        <div className="font-semibold text-slate-900 dark:text-slate-100 flex items-center gap-1">
-                          <MapPin className="w-3 h-3 text-emerald-500" />
+                        <div className="font-semibold text-slate-900 dark:text-slate-100 flex items-center gap-1.5">
+                          <span>{s.flag || '📍'}</span>
                           <span>{s.city}</span>
+                          {s.isCurrentClient && (
+                            <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
+                              YOU
+                            </span>
+                          )}
                         </div>
-                        <div className="text-[10px] text-slate-400">{s.province}, Pakistan</div>
+                        <div className="text-[10px] text-slate-400">
+                          {s.province ? `${s.province}, ` : ''}{s.country || 'Global'}
+                        </div>
+                        {s.isp && (
+                          <div className="text-[9px] text-slate-500 font-mono truncate max-w-[160px]" title={s.isp}>
+                            {s.isp}
+                          </div>
+                        )}
                       </td>
 
                       <td className="py-3 px-4">

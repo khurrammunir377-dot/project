@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { Input } from '@/components/ui/Input';
 import { Select } from '@/components/ui/Select';
+import { NexoraLogo } from '@/components/ui/NexoraLogo';
 
 export default function SettingsPage() {
   const { state, updateSettings, resetAllData, logAudit } = useERPStore();
@@ -126,21 +127,14 @@ export default function SettingsPage() {
                 onChange={(e) => setForm({ ...form, address: e.target.value })}
               />
             </div>
-            <div className="col-span-1 sm:col-span-2 flex items-center gap-4 p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/40">
-              <img
-                src="/logo-icon.png"
-                alt="Nexora Corporate Emblem"
-                className="h-14 w-auto object-contain drop-shadow-[0_4px_12px_rgba(0,145,254,0.35)]"
-              />
-              <div>
-                <h4 className="text-sm font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
-                  Official Corporate Brand Emblem
-                  <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 border border-emerald-300">
-                    Active on all PDFs
-                  </span>
-                </h4>
-                <p className="text-xs text-slate-500 mt-0.5">
-                  High-resolution 3D Nexora insignia embedded directly on all generated Tax Invoices, Quotations, Purchase Orders, and Payslips.
+            <div className="col-span-1 sm:col-span-2 flex items-center justify-between gap-4 p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-950 text-white shadow-inner">
+              <NexoraLogo size="md" />
+              <div className="text-right">
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
+                  Active Brand Asset • 10s Sheen
+                </span>
+                <p className="text-[11px] text-slate-400 mt-1">
+                  Embedded across PDFs, headers, and client portals.
                 </p>
               </div>
             </div>
