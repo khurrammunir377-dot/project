@@ -25,6 +25,10 @@ export default function EmployeesPage() {
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
+    fatherName: '',
+    cnic: '',
+    address: '',
+    ntn: '',
     email: '',
     phone: '',
     avatar: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&q=80&w=200',
@@ -52,6 +56,10 @@ export default function EmployeesPage() {
       employeeId: `NEX-${Math.floor(100 + Math.random() * 900)}`,
       firstName: formData.firstName,
       lastName: formData.lastName,
+      fatherName: formData.fatherName || 'Not specified',
+      cnic: formData.cnic || '42101-1234567-1',
+      address: formData.address || 'Karachi, Sindh, Pakistan',
+      ntn: formData.ntn || '7492819-3',
       email: formData.email,
       phone: formData.phone || '+92 300 1234567',
       avatar: formData.avatar,
@@ -68,7 +76,7 @@ export default function EmployeesPage() {
       emergencyContact: {
         name: formData.emergencyName || 'Emergency Contact',
         relationship: formData.emergencyRelationship,
-        phone: formData.emergencyPhone || '+1 555-0100',
+        phone: formData.emergencyPhone || '+92 321 9876543',
       },
       skills: formData.skills.split(',').map((s) => s.trim()),
     };
@@ -256,6 +264,36 @@ export default function EmployeesPage() {
             />
           </div>
 
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <Input
+              label="Father's / Husband's Name"
+              value={formData.fatherName}
+              onChange={(e) => setFormData({ ...formData, fatherName: e.target.value })}
+              placeholder="e.g. Tariq Mahmood Khan"
+            />
+            <Input
+              label="National ID Card (CNIC)"
+              value={formData.cnic}
+              onChange={(e) => setFormData({ ...formData, cnic: e.target.value })}
+              placeholder="e.g. 42101-1234567-1"
+            />
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <Input
+              label="Residential Address"
+              value={formData.address}
+              onChange={(e) => setFormData({ ...formData, address: e.target.value })}
+              placeholder="e.g. House 42, Block 6, PECHS, Karachi"
+            />
+            <Input
+              label="National Tax Number (NTN)"
+              value={formData.ntn}
+              onChange={(e) => setFormData({ ...formData, ntn: e.target.value })}
+              placeholder="e.g. 7492819-3"
+            />
+          </div>
+
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <Select
               label="Department"
@@ -317,19 +355,19 @@ export default function EmployeesPage() {
               label="Emergency Contact Name"
               value={formData.emergencyName}
               onChange={(e) => setFormData({ ...formData, emergencyName: e.target.value })}
-              placeholder="e.g. Nora Gallagher"
+              placeholder="e.g. Tariq Mahmood (Father)"
             />
             <Input
               label="Relationship"
               value={formData.emergencyRelationship}
               onChange={(e) => setFormData({ ...formData, emergencyRelationship: e.target.value })}
-              placeholder="Spouse / Parent"
+              placeholder="Father / Spouse / Brother"
             />
             <Input
               label="Emergency Phone"
               value={formData.emergencyPhone}
               onChange={(e) => setFormData({ ...formData, emergencyPhone: e.target.value })}
-              placeholder="+1 555-9011"
+              placeholder="+92 321 9876543"
             />
           </div>
 
@@ -403,19 +441,31 @@ export default function EmployeesPage() {
                   <span className="font-semibold text-slate-800 dark:text-slate-200">{detailEmp.email}</span>
                 </div>
                 <div className="p-3 rounded-lg bg-slate-50 dark:bg-slate-800/40">
-                  <span className="text-slate-400 block mb-0.5">Phone</span>
+                  <span className="text-slate-400 block mb-0.5">Phone Number</span>
                   <span className="font-semibold text-slate-800 dark:text-slate-200">{detailEmp.phone}</span>
+                </div>
+                <div className="p-3 rounded-lg bg-slate-50 dark:bg-slate-800/40">
+                  <span className="text-slate-400 block mb-0.5">Father / Husband Name</span>
+                  <span className="font-semibold text-slate-800 dark:text-slate-200">{detailEmp.fatherName || 'Tariq Mahmood'}</span>
+                </div>
+                <div className="p-3 rounded-lg bg-slate-50 dark:bg-slate-800/40">
+                  <span className="text-slate-400 block mb-0.5">CNIC / ID Card</span>
+                  <span className="font-mono font-semibold text-slate-800 dark:text-slate-200">{detailEmp.cnic || '42101-1234567-1'}</span>
+                </div>
+                <div className="p-3 rounded-lg bg-slate-50 dark:bg-slate-800/40">
+                  <span className="text-slate-400 block mb-0.5">National Tax Number (NTN)</span>
+                  <span className="font-mono font-semibold text-emerald-600 dark:text-emerald-400">{detailEmp.ntn || '7492819-3'}</span>
                 </div>
                 <div className="p-3 rounded-lg bg-slate-50 dark:bg-slate-800/40">
                   <span className="text-slate-400 block mb-0.5">Branch Location</span>
                   <span className="font-semibold text-slate-800 dark:text-slate-200">{detailEmp.branch}</span>
                 </div>
-                <div className="p-3 rounded-lg bg-slate-50 dark:bg-slate-800/40">
-                  <span className="text-slate-400 block mb-0.5">Direct Reporting Manager</span>
-                  <span className="font-semibold text-slate-800 dark:text-slate-200">{detailEmp.manager}</span>
+                <div className="col-span-2 p-3 rounded-lg bg-slate-50 dark:bg-slate-800/40">
+                  <span className="text-slate-400 block mb-0.5">Residential Address</span>
+                  <span className="font-semibold text-slate-800 dark:text-slate-200">{detailEmp.address || 'House 42, Block 6, PECHS, Karachi, Pakistan'}</span>
                 </div>
                 <div className="col-span-2 p-3 rounded-lg bg-slate-50 dark:bg-slate-800/40">
-                  <span className="text-slate-400 block mb-1">Key Competencies & Skills</span>
+                  <span className="text-slate-400 block mb-1">Key Competencies &amp; Skills</span>
                   <div className="flex flex-wrap gap-1.5">
                     {detailEmp.skills.map((s, idx) => (
                       <span key={idx} className="px-2 py-0.5 rounded bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 font-medium">
@@ -447,7 +497,7 @@ export default function EmployeesPage() {
                 <div className="p-3 rounded-lg bg-slate-50 dark:bg-slate-800/40">
                   <span className="text-slate-400 block mb-0.5">Basic Monthly Salary</span>
                   <span className="font-bold text-slate-900 dark:text-slate-100 text-sm">
-                    ${detailEmp.basicSalary.toLocaleString()} / mo
+                    Rs. {detailEmp.basicSalary.toLocaleString()} / mo
                   </span>
                 </div>
                 <div className="p-3 rounded-lg bg-slate-50 dark:bg-slate-800/40">

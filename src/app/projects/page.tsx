@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { FolderKanban, Plus, Clock, DollarSign, CheckCircle2 } from 'lucide-react';
+import { FolderKanban, Plus, Clock, Coins, CheckCircle2 } from 'lucide-react';
 import { useERPStore } from '@/lib/store/StoreContext';
 import { useAuth } from '@/lib/auth/AuthContext';
 import { Button } from '@/components/ui/Button';
@@ -51,7 +51,7 @@ export default function ProjectsPage() {
         <StatCard
           title="Committed Portfolio Budget"
           value={`Rs. ${(state.projects.reduce((acc, p) => acc + p.budget, 0) / 1000).toFixed(0)}k`}
-          icon={<DollarSign className="w-5 h-5" />}
+          icon={<Coins className="w-5 h-5" />}
           subtitle={`Spent: Rs. ${(state.projects.reduce((acc, p) => acc + p.spent, 0) / 1000).toFixed(0)}k`}
           colorScheme="emerald"
         />

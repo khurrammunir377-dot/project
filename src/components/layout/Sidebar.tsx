@@ -18,7 +18,8 @@ import {
   Package,
   Building2,
   ShoppingCart,
-  DollarSign,
+  Coins,
+  Megaphone,
   FolderKanban,
   CheckSquare,
   FileArchive,
@@ -86,7 +87,7 @@ const NAV_SECTIONS: NavSection[] = [
   {
     title: 'Financials & Expenses',
     items: [
-      { name: 'Expense Claims', href: '/finance/expenses', icon: DollarSign },
+      { name: 'Expense Claims', href: '/finance/expenses', icon: Coins },
       { name: 'Chart of Accounts', href: '/finance/accounts', icon: BarChart3 },
     ],
   },
@@ -109,6 +110,7 @@ const NAV_SECTIONS: NavSection[] = [
   {
     title: 'Intelligence & Admin',
     items: [
+      { name: 'Marketing & Ads Report', href: '/reports/marketing', icon: Megaphone },
       { name: 'Reporting Center', href: '/reports', icon: BarChart3 },
       { name: 'System Settings', href: '/settings', icon: Settings },
       { name: 'Security Audit Logs', href: '/audit-logs', icon: ShieldAlert },

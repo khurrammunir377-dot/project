@@ -95,6 +95,10 @@ export interface Employee {
   employeeId: string;
   firstName: string;
   lastName: string;
+  fatherName?: string;
+  cnic?: string;
+  address?: string;
+  ntn?: string;
   email: string;
   phone: string;
   avatar: string;
@@ -311,6 +315,9 @@ export interface Warehouse {
   manager: string;
   capacity: number;
   currentStockUnits: number;
+  status?: 'Operational' | 'Maintenance' | 'Full';
+  type?: string;
+  phone?: string;
 }
 
 export interface Supplier {

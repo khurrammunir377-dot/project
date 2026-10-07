@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Monitor, Plus, DollarSign, Layers } from 'lucide-react';
+import { Monitor, Plus, Coins, Layers } from 'lucide-react';
 import { useERPStore } from '@/lib/store/StoreContext';
 import { useAuth } from '@/lib/auth/AuthContext';
 import { DataTable, Column } from '@/components/ui/DataTable';
@@ -23,9 +23,9 @@ export default function AssetsPage() {
     assetTag: '',
     category: 'Computers' as Asset['category'],
     serialNumber: '',
-    cost: 2500,
-    assignedTo: 'Michael Scott',
-    department: 'Engineering & IT',
+    cost: 250000,
+    assignedTo: 'Saad Farooq',
+    department: 'Software Engineering & IT',
     status: 'In Use' as Asset['status'],
   });
 
@@ -45,7 +45,7 @@ export default function AssetsPage() {
       status: form.status,
     });
 
-    logAudit('Registered Asset', 'assets', `Added asset: ${form.name} ($${form.cost})`, currentUser.name, currentUser.id);
+    logAudit('Registered Asset', 'assets', `Added asset: ${form.name} (Rs. ${form.cost.toLocaleString()})`, currentUser.name, currentUser.id);
     setIsModalOpen(false);
   };
 
@@ -94,7 +94,11 @@ export default function AssetsPage() {
       header: 'Acquisition Cost',
       accessorKey: 'cost',
       sortable: true,
-      render: (a) => <span className="font-semibold">${a.cost.toLocaleString()}</span>,
+      render: (a) => (
+        <span className="font-semibold font-mono text-emerald-600 dark:text-emerald-400">
+          Rs. {a.cost.toLocaleString()}
+        </span>
+      ),
     },
     {
       header: 'Status',
@@ -134,8 +138,8 @@ export default function AssetsPage() {
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <StatCard
           title="Total Fixed Assets Value"
-          value={`$${totalAssetValue.toLocaleString()}`}
-          icon={<DollarSign className="w-5 h-5" />}
+          value={`Rs. ${totalAssetValue.toLocaleString()}`}
+          icon={<Coins className="w-5 h-5" />}
           subtitle="Cumulative purchase expenditure"
           colorScheme="indigo"
         />

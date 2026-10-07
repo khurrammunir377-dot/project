@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Settings, Save, Download, Upload, RotateCcw, ShieldCheck, Building, DollarSign } from 'lucide-react';
+import { Settings, Save, Download, Upload, RotateCcw, ShieldCheck, Building, Coins } from 'lucide-react';
 import { useERPStore } from '@/lib/store/StoreContext';
 import { useAuth } from '@/lib/auth/AuthContext';
 import { Button } from '@/components/ui/Button';

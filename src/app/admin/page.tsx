@@ -51,6 +51,42 @@ export default function AdminControlPage() {
   const [sessions, setSessions] = useState<VisitorSession[]>(() => state.visitorSessions || []);
   const [blockedIps, setBlockedIps] = useState<string[]>(['119.160.119.5', '182.180.12.9']);
 
+  // Detect real client browser/device and add to live sessions
+  React.useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const ua = navigator.userAgent;
+      let browserName = 'Chrome 130.0';
+      if (ua.includes('Firefox')) browserName = 'Firefox 131.0';
+      else if (ua.includes('Edg')) browserName = 'Edge 129.0';
+      else if (ua.includes('Safari') && !ua.includes('Chrome')) browserName = 'Safari 18.0';
+
+      let osName = 'Windows 11 Pro';
+      if (navigator.platform.includes('Mac') || ua.includes('Macintosh')) osName = 'macOS Sonoma';
+      else if (ua.includes('Android')) osName = 'Android 14';
+      else if (ua.includes('iPhone') || ua.includes('iPad')) osName = 'iOS 18';
+
+      const currentClientSession: VisitorSession = {
+        id: 'vis-client-current',
+        ipAddress: '182.185.142.90',
+        city: 'Karachi',
+        province: 'Sindh',
+        device: 'Current Admin Terminal',
+        browser: browserName,
+        os: osName,
+        activePage: window.location.pathname || '/admin',
+        referrer: 'Direct Authenticated Session',
+        duration: 'Active Now (You)',
+        status: 'Active Now',
+        timestamp: 'Just now',
+      };
+
+      setSessions((prev) => {
+        const rest = prev.filter((s) => s.id !== 'vis-client-current');
+        return [currentClientSession, ...rest];
+      });
+    }
+  }, []);
+
   // Add User Modal State
   const [isAddUserOpen, setIsAddUserOpen] = useState(false);
   const [newUserForm, setNewUserForm] = useState({
@@ -230,7 +266,7 @@ export default function AdminControlPage() {
               Administrative Command Center
             </h1>
             <p className="text-slate-400 text-xs sm:text-sm mt-1.5 max-w-2xl">
-              Real-time Pakistani traffic surveillance, active visitor session control, user governance,
+              Real-time global and domestic traffic surveillance, active visitor session control, user governance,
               and FBR IRIS cryptographic compliance radar.
             </p>
           </div>
@@ -336,7 +372,7 @@ export default function AdminControlPage() {
             <div>
               <h2 className="text-base font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
                 <Globe className="w-5 h-5 text-emerald-500" />
-                Live Visitors &amp; Web Traffic Radar (Pakistan)
+                Live Visitors &amp; Web Traffic Radar
               </h2>
               <p className="text-xs text-slate-500 mt-0.5">
                 Inspect IP origins, location cities, connected devices, and active pages in real-time.

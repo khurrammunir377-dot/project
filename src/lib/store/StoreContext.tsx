@@ -26,6 +26,8 @@ import {
   Candidate,
   PerformanceReview,
   User,
+  Warehouse,
+  VisitorSession,
 } from '../types';
 
 interface StoreContextType {
@@ -56,6 +58,11 @@ interface StoreContextType {
   recordInvoicePayment: (id: string, amount: number) => void;
   addProduct: (prod: Omit<Product, 'id'>) => void;
   updateProductStock: (id: string, delta: number) => void;
+  addWarehouse: (wh: Omit<Warehouse, 'id'>) => void;
+  updateWarehouse: (id: string, updates: Partial<Warehouse>) => void;
+  transferWarehouseStock: (sourceId: string, destId: string, units: number, productName?: string) => void;
+  addMultiplePayslips: (slips: Omit<Payslip, 'id'>[]) => void;
+  recordVisitorSession: (session: Partial<VisitorSession>) => void;
   addPurchaseOrder: (po: Omit<PurchaseOrder, 'id'>) => void;
   updatePOStatus: (id: string, status: PurchaseOrder['status']) => void;
   addExpenseClaim: (claim: Omit<ExpenseClaim, 'id' | 'claimNumber' | 'status'>) => void;
@@ -361,6 +368,76 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
     }));
   }, [updateAndPersist]);
 
+  const addWarehouse = useCallback((wh: Omit<Warehouse, 'id'>) => {
+    const newWh: Warehouse = { ...wh, id: `wh-${Date.now()}` };
+    updateAndPersist((prev) => ({
+      ...prev,
+      warehouses: [...prev.warehouses, newWh],
+    }));
+  }, [updateAndPersist]);
+
+  const updateWarehouse = useCallback((id: string, updates: Partial<Warehouse>) => {
+    updateAndPersist((prev) => ({
+      ...prev,
+      warehouses: prev.warehouses.map((w) => (w.id === id ? { ...w, ...updates } : w)),
+    }));
+  }, [updateAndPersist]);
+
+  const transferWarehouseStock = useCallback((sourceId: string, destId: string, units: number) => {
+    updateAndPersist((prev) => ({
+      ...prev,
+      warehouses: prev.warehouses.map((w) => {
+        if (w.id === sourceId) {
+          return { ...w, currentStockUnits: Math.max(0, w.currentStockUnits - units) };
+        }
+        if (w.id === destId) {
+          return { ...w, currentStockUnits: Math.min(w.capacity, w.currentStockUnits + units) };
+        }
+        return w;
+      }),
+    }));
+  }, [updateAndPersist]);
+
+  const addMultiplePayslips = useCallback((slips: Omit<Payslip, 'id'>[]) => {
+    const newSlips: Payslip[] = slips.map((s, idx) => ({
+      ...s,
+      id: `pay-${Date.now()}-${idx}`,
+    }));
+    updateAndPersist((prev) => ({
+      ...prev,
+      payslips: [...newSlips, ...prev.payslips],
+    }));
+  }, [updateAndPersist]);
+
+  const recordVisitorSession = useCallback((session: Partial<VisitorSession>) => {
+    updateAndPersist((prev) => {
+      const existing = prev.visitorSessions || [];
+      const matchIdx = existing.findIndex(
+        (s) => (session.id && s.id === session.id) || (session.ipAddress && s.ipAddress === session.ipAddress)
+      );
+      if (matchIdx >= 0) {
+        const updated = [...existing];
+        updated[matchIdx] = { ...updated[matchIdx], ...session };
+        return { ...prev, visitorSessions: updated };
+      }
+      const newSession: VisitorSession = {
+        id: session.id || `vis-${Date.now()}`,
+        ipAddress: session.ipAddress || '182.185.142.90',
+        city: session.city || 'Karachi',
+        province: session.province || 'Sindh',
+        device: session.device || 'Desktop Workstation',
+        browser: session.browser || 'Chrome 129.0',
+        os: session.os || 'Windows 11',
+        activePage: session.activePage || '/dashboard',
+        referrer: session.referrer || 'Direct Portal',
+        duration: session.duration || 'Just now',
+        status: (session.status as any) || 'Active Now',
+        timestamp: 'Just now',
+      };
+      return { ...prev, visitorSessions: [newSession, ...existing] };
+    });
+  }, [updateAndPersist]);
+
   const addPurchaseOrder = useCallback((po: Omit<PurchaseOrder, 'id'>) => {
     const newPO: PurchaseOrder = { ...po, id: `po-${Date.now()}` };
     updateAndPersist((prev) => ({
@@ -545,6 +622,11 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
         recordInvoicePayment,
         addProduct,
         updateProductStock,
+        addWarehouse,
+        updateWarehouse,
+        transferWarehouseStock,
+        addMultiplePayslips,
+        recordVisitorSession,
         addPurchaseOrder,
         updatePOStatus,
         addExpenseClaim,

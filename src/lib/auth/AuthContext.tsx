@@ -14,6 +14,7 @@ interface AuthContextType {
   can: (module: ModuleName, action: PermissionAction) => boolean;
   logout: () => void;
   login: (email: string, password?: string) => boolean;
+  loginWithGoogle: (email: string, name: string, avatar?: string) => boolean;
   loginAs: (email: string) => boolean;
   isAuthenticated: boolean;
   isHydrated: boolean;
@@ -148,7 +149,7 @@ const ROLE_PERMISSIONS: Record<UserRole, Partial<Record<ModuleName, PermissionAc
 };
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const { state, logAudit } = useERPStore();
+  const { state, addUser, logAudit } = useERPStore();
   const [currentUser, setCurrentUser] = useState<User>(() => state.users[0]);
   const [currentBranch, setCurrentBranch] = useState<Branch>(() => state.branches[0]);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
@@ -210,6 +211,36 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return false;
   };
 
+  const loginWithGoogle = (email: string, name: string, avatar?: string): boolean => {
+    const trimmedEmail = email.trim().toLowerCase();
+    let target = state.users.find((u) => u.email.toLowerCase() === trimmedEmail);
+    if (!target) {
+      target = {
+        id: `usr-google-${Date.now()}`,
+        name: name || 'Google Verified User',
+        email: trimmedEmail,
+        role: 'Employee',
+        departmentId: 'dept-1',
+        branchId: 'br-1',
+        jobTitle: 'Enterprise Associate',
+        employeeId: `NEX-G${Math.floor(100 + Math.random() * 900)}`,
+        phone: '+92 300 1234567',
+        avatar: avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=200',
+        status: 'Active',
+        twoFactorEnabled: true,
+        lastLogin: 'Just now (Google SSO)',
+      };
+      addUser(target);
+    }
+    setCurrentUser(target);
+    setIsAuthenticated(true);
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('nexora_auth_user', target.id);
+    }
+    logAudit('Google SSO Login', 'dashboard', `Google SSO verified: ${target.email}`, target.name, target.id);
+    return true;
+  };
+
   const loginAs = (email: string): boolean => {
     return login(email);
   };
@@ -244,6 +275,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         can,
         logout,
         login,
+        loginWithGoogle,
         loginAs,
         isAuthenticated,
         isHydrated,

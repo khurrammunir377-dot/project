@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { DollarSign, Plus, Check, FileText, Upload, CheckCircle2 } from 'lucide-react';
+import { Coins, Plus, Check, FileText, Upload, CheckCircle2 } from 'lucide-react';
 import { useERPStore } from '@/lib/store/StoreContext';
 import { useAuth } from '@/lib/auth/AuthContext';
 import { DataTable, Column } from '@/components/ui/DataTable';
@@ -20,7 +20,7 @@ export default function ExpensesPage() {
 
   const [form, setForm] = useState({
     category: 'Travel & Accommodation',
-    amount: 250,
+    amount: 25000,
     date: new Date().toISOString().split('T')[0],
     description: '',
     receiptName: 'receipt-invoice.pdf',
@@ -41,13 +41,13 @@ export default function ExpensesPage() {
       receiptName: form.receiptName,
     });
 
-    logAudit('Submitted Expense Claim', 'expenses', `Submitted claim for $${form.amount} (${form.category})`, currentUser.name, currentUser.id);
+    logAudit('Submitted Expense Claim', 'expenses', `Submitted claim for Rs. ${Number(form.amount).toLocaleString()} (${form.category})`, currentUser.name, currentUser.id);
     setIsModalOpen(false);
   };
 
   const handleApprove = (claim: ExpenseClaim) => {
     updateExpenseStatus(claim.id, 'Approved', currentUser.name);
-    logAudit('Approved Expense Claim', 'expenses', `Approved claim ${claim.claimNumber} ($${claim.amount})`, currentUser.name, currentUser.id);
+    logAudit('Approved Expense Claim', 'expenses', `Approved claim ${claim.claimNumber} (Rs. ${claim.amount.toLocaleString()})`, currentUser.name, currentUser.id);
   };
 
   const handleReimburse = (claim: ExpenseClaim) => {
@@ -135,7 +135,7 @@ export default function ExpensesPage() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100 flex items-center gap-2">
-            <DollarSign className="w-6 h-6 text-indigo-600" /> Expense Claims & Reimbursements
+            <Coins className="w-6 h-6 text-indigo-600" /> Expense Claims &amp; Reimbursements
           </h1>
           <p className="text-xs text-slate-500 mt-1">
             Corporate receipts, employee expense reports, policy compliance, and automated payouts.
@@ -153,7 +153,7 @@ export default function ExpensesPage() {
         <StatCard
           title="Total Claims Incurred"
           value={`Rs. ${totalClaimed.toLocaleString()}`}
-          icon={<DollarSign className="w-5 h-5" />}
+          icon={<Coins className="w-5 h-5" />}
           subtitle="YTD business expenses"
           colorScheme="indigo"
         />

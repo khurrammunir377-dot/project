@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { BarChart3, Download, Filter, FileText, Users, DollarSign, Package, FolderKanban } from 'lucide-react';
+import { BarChart3, Download, Filter, FileText, Users, Coins, Package, FolderKanban } from 'lucide-react';
 import { useERPStore } from '@/lib/store/StoreContext';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
@@ -136,7 +136,7 @@ export default function ReportsPage() {
       {/* Report Selection Tabs */}
       <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
         {[
-          { key: 'sales', label: 'Commercial & Sales', icon: DollarSign },
+          { key: 'sales', label: 'Commercial & Sales', icon: Coins },
           { key: 'payroll', label: 'Payroll & Comp', icon: Users },
           { key: 'inventory', label: 'Inventory & Stock', icon: Package },
           { key: 'expenses', label: 'Expense Claims', icon: FileText },

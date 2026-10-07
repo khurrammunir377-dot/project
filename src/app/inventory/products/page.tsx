@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Package, Plus, AlertTriangle, ArrowUpDown, DollarSign, Layers } from 'lucide-react';
+import { Package, Plus, AlertTriangle, ArrowUpDown, Coins, Layers } from 'lucide-react';
 import { useERPStore } from '@/lib/store/StoreContext';
 import { useAuth } from '@/lib/auth/AuthContext';
 import { DataTable, Column } from '@/components/ui/DataTable';
@@ -180,7 +180,7 @@ export default function ProductsPage() {
         <StatCard
           title="Total Valuation"
           value={`Rs. ${(totalInventoryValue / 1000).toFixed(1)}k`}
-          icon={<DollarSign className="w-5 h-5" />}
+          icon={<Coins className="w-5 h-5" />}
           subtitle="At current cost price"
           colorScheme="indigo"
         />

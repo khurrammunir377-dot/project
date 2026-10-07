@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import {
   Users,
-  DollarSign,
+  Coins,
   TrendingUp,
   CreditCard,
   Clock,
@@ -132,9 +132,9 @@ export default function DashboardPage() {
         />
         <StatCard
           title="YTD Realized Revenue"
-          value={`$${(totalRevenue / 1000).toFixed(1)}k`}
-          icon={<DollarSign className="w-5 h-5" />}
-          subtitle={`$${(outstandingInvoicesTotal / 1000).toFixed(1)}k outstanding`}
+          value={`Rs. ${(totalRevenue / 1000000).toFixed(2)}M`}
+          icon={<Coins className="w-5 h-5" />}
+          subtitle={`Rs. ${(outstandingInvoicesTotal / 1000).toFixed(0)}k outstanding`}
           trend={{ value: '+14.2% MoM', positive: true }}
           colorScheme="emerald"
         />
@@ -296,7 +296,7 @@ export default function DashboardPage() {
                 </div>
                 <div className="flex items-center justify-between text-[11px] text-slate-400">
                   <span>Manager: {p.manager}</span>
-                  <span>Spent: ${p.spent.toLocaleString()} / ${p.budget.toLocaleString()}</span>
+                  <span>Spent: Rs. {p.spent.toLocaleString()} / Rs. {p.budget.toLocaleString()}</span>
                 </div>
               </div>
             ))}

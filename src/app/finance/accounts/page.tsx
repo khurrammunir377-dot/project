@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { BarChart3, Plus, DollarSign, ArrowUpRight, ArrowDownRight, Scale } from 'lucide-react';
+import { BarChart3, Plus, Coins, ArrowUpRight, ArrowDownRight, Scale } from 'lucide-react';
 import { useERPStore } from '@/lib/store/StoreContext';
 import { DataTable, Column } from '@/components/ui/DataTable';
 import { Badge } from '@/components/ui/Badge';
@@ -48,15 +48,15 @@ export default function AccountsPage() {
     {
       header: 'Currency',
       accessorKey: 'currency',
-      render: (a) => <span className="text-xs font-mono">{a.currency}</span>,
+      render: (a) => <span className="text-xs font-mono">{a.currency || 'PKR'}</span>,
     },
     {
       header: 'Current Ledger Balance',
       accessorKey: 'balance',
       sortable: true,
       render: (a) => (
-        <span className="text-sm font-bold text-slate-900 dark:text-slate-100">
-          ${a.balance.toLocaleString()}
+        <span className="text-sm font-bold font-mono text-slate-900 dark:text-slate-100">
+          Rs. {a.balance.toLocaleString()}
         </span>
       ),
     },
@@ -67,7 +67,7 @@ export default function AccountsPage() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100 flex items-center gap-2">
-            <BarChart3 className="w-6 h-6 text-indigo-600" /> Chart of Accounts & General Ledger
+            <BarChart3 className="w-6 h-6 text-indigo-600" /> Chart of Accounts &amp; General Ledger
           </h1>
           <p className="text-xs text-slate-500 mt-1">
             Standard GAAP/IFRS ledger accounts, real-time trial balances, and financial structure.
@@ -78,30 +78,30 @@ export default function AccountsPage() {
       <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
         <StatCard
           title="Total Assets"
-          value={`$${(totalAssets / 1000).toFixed(0)}k`}
-          icon={<DollarSign className="w-5 h-5" />}
+          value={`Rs. ${(totalAssets / 1000).toFixed(0)}k`}
+          icon={<Coins className="w-5 h-5" />}
           subtitle="Cash, receivables, equipment"
           colorScheme="emerald"
         />
         <StatCard
           title="Total Liabilities"
-          value={`$${(totalLiabilities / 1000).toFixed(0)}k`}
+          value={`Rs. ${(totalLiabilities / 1000).toFixed(0)}k`}
           icon={<Scale className="w-5 h-5" />}
           subtitle="Payables and accruals"
           colorScheme="rose"
         />
         <StatCard
           title="YTD Total Revenue"
-          value={`$${(totalRevenue / 1000).toFixed(0)}k`}
+          value={`Rs. ${(totalRevenue / 1000).toFixed(0)}k`}
           icon={<ArrowUpRight className="w-5 h-5" />}
           subtitle="Gross enterprise earnings"
           colorScheme="indigo"
         />
         <StatCard
           title="Net Operating Margin"
-          value={`$${((totalRevenue - totalExpenses) / 1000).toFixed(0)}k`}
+          value={`Rs. ${((totalRevenue - totalExpenses) / 1000).toFixed(0)}k`}
           icon={<ArrowDownRight className="w-5 h-5" />}
-          subtitle={`${(((totalRevenue - totalExpenses) / totalRevenue) * 100).toFixed(1)}% Operating Margin`}
+          subtitle={`${(((totalRevenue - totalExpenses) / (totalRevenue || 1)) * 100).toFixed(1)}% Operating Margin`}
           colorScheme="sky"
         />
       </div>

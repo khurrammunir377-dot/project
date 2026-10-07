@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Contact, Plus, Mail, Phone, DollarSign, Building } from 'lucide-react';
+import { Contact, Plus, Mail, Phone, Coins, Building } from 'lucide-react';
 import { useERPStore } from '@/lib/store/StoreContext';
 import { useAuth } from '@/lib/auth/AuthContext';
 import { DataTable, Column } from '@/components/ui/DataTable';
@@ -84,8 +84,8 @@ export default function CustomersPage() {
       accessorKey: 'totalRevenue',
       sortable: true,
       render: (c) => (
-        <span className="font-semibold text-slate-900 dark:text-slate-100">
-          ${c.totalRevenue.toLocaleString()}
+        <span className="font-semibold font-mono text-slate-900 dark:text-slate-100">
+          Rs. {c.totalRevenue.toLocaleString()}
         </span>
       ),
     },
@@ -94,8 +94,8 @@ export default function CustomersPage() {
       accessorKey: 'outstandingBalance',
       sortable: true,
       render: (c) => (
-        <span className={`text-xs font-semibold ${c.outstandingBalance > 0 ? 'text-rose-600' : 'text-emerald-600'}`}>
-          ${c.outstandingBalance.toLocaleString()}
+        <span className={`text-xs font-semibold font-mono ${c.outstandingBalance > 0 ? 'text-rose-600' : 'text-emerald-600'}`}>
+          Rs. {c.outstandingBalance.toLocaleString()}
         </span>
       ),
     },
@@ -136,14 +136,14 @@ export default function CustomersPage() {
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <StatCard
           title="Total Lifetime Client Value"
-          value={`$${totalClientsRevenue.toLocaleString()}`}
-          icon={<DollarSign className="w-5 h-5" />}
+          value={`Rs. ${totalClientsRevenue.toLocaleString()}`}
+          icon={<Coins className="w-5 h-5" />}
           trend={{ value: '+18.5% YoY', positive: true }}
           colorScheme="emerald"
         />
         <StatCard
           title="Outstanding Receivables"
-          value={`$${totalOutstanding.toLocaleString()}`}
+          value={`Rs. ${totalOutstanding.toLocaleString()}`}
           icon={<Building className="w-5 h-5" />}
           subtitle="Total unpaid balance across accounts"
           colorScheme="rose"

@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { TrendingUp, Plus, DollarSign, Calendar, UserCheck } from 'lucide-react';
+import { TrendingUp, Plus, Coins, Calendar, UserCheck } from 'lucide-react';
 import { useERPStore } from '@/lib/store/StoreContext';
 import { useAuth } from '@/lib/auth/AuthContext';
 import { Button } from '@/components/ui/Button';
@@ -79,7 +79,7 @@ export default function LeadsPage() {
         <StatCard
           title="Total Pipeline Volume"
           value={`Rs. ${(totalPipelineValue / 1000).toFixed(0)}k`}
-          icon={<DollarSign className="w-5 h-5" />}
+          icon={<Coins className="w-5 h-5" />}
           subtitle="Gross potential contract value"
           colorScheme="indigo"
         />

@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Receipt, Plus, Download, DollarSign, Check, CreditCard, AlertCircle } from 'lucide-react';
+import { Receipt, Plus, Download, Coins, Check, CreditCard, AlertCircle } from 'lucide-react';
 import { useERPStore } from '@/lib/store/StoreContext';
 import { useAuth } from '@/lib/auth/AuthContext';
 import { DataTable, Column } from '@/components/ui/DataTable';
@@ -167,7 +167,7 @@ export default function InvoicesPage() {
                 setSelectedInvoiceForPay(i);
                 setPaymentAmount(i.balanceDue);
               }}
-              icon={<DollarSign className="w-3.5 h-3.5 text-emerald-600" />}
+              icon={<Coins className="w-3.5 h-3.5 text-emerald-600" />}
             >
               Pay
             </Button>
@@ -207,7 +207,7 @@ export default function InvoicesPage() {
         <StatCard
           title="Cash Collected"
           value={`Rs. ${totalReceived.toLocaleString()}`}
-          icon={<DollarSign className="w-5 h-5" />}
+          icon={<Coins className="w-5 h-5" />}
           subtitle="Received in bank account"
           colorScheme="emerald"
         />
