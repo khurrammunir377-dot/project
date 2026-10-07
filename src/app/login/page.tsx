@@ -2,19 +2,11 @@
 
 import React, { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import Link from 'next/link';
 import {
   Lock,
   Mail,
-  ShieldCheck,
-  ArrowRight,
   AlertCircle,
-  CheckCircle2,
-  KeyRound,
-  Building,
-  UserCheck,
   X,
-  User,
 } from 'lucide-react';
 import { useAuth } from '@/lib/auth/AuthContext';
 import { NexoraLogo } from '@/components/ui/NexoraLogo';
@@ -48,9 +40,9 @@ function LoginForm() {
   const searchParams = useSearchParams();
   const redirectPath = searchParams.get('redirect') || '/dashboard';
 
-  const { login, loginWithGoogle, isAuthenticated, isHydrated, users } = useAuth();
+  const { login, loginWithGoogle, isAuthenticated, isHydrated } = useAuth();
   const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('nexora123');
+  const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -76,26 +68,10 @@ function LoginForm() {
       if (success) {
         router.push(redirectPath);
       } else {
-        setError('Invalid credentials. Please select one of the pre-configured enterprise profiles below or continue with Google.');
+        setError('Invalid credentials. Please enter a valid corporate email and password or sign in with Google.');
         setIsLoading(false);
       }
     }, 400);
-  };
-
-  const handleQuickLogin = (userEmail: string) => {
-    setEmail(userEmail);
-    setError(null);
-    setIsLoading(true);
-
-    setTimeout(() => {
-      const success = login(userEmail);
-      if (success) {
-        router.push(redirectPath);
-      } else {
-        setError('Failed to log in with this profile.');
-        setIsLoading(false);
-      }
-    }, 300);
   };
 
   const handleGoogleAuth = (googleUserEmail: string, googleUserName: string) => {
@@ -165,54 +141,10 @@ function LoginForm() {
               <span>Sign in with Google Workspace</span>
             </button>
 
-            {/* Quick 1-Click Google Accounts */}
-            <div className="space-y-2 pt-2">
-              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">
-                Instant Google Sign-In:
-              </span>
-              <button
-                type="button"
-                onClick={() => handleGoogleAuth('khurrammunir377@gmail.com', 'Khurram Munir')}
-                className="w-full p-2.5 rounded-xl bg-slate-950/80 hover:bg-slate-800 border border-slate-800 hover:border-emerald-500/50 flex items-center gap-3 transition-all text-left group"
-              >
-                <div className="w-8 h-8 rounded-full bg-emerald-600 text-white font-bold flex items-center justify-center text-xs shrink-0 shadow-sm">
-                  KM
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="text-xs font-bold text-white group-hover:text-emerald-400 truncate">
-                    Khurram Munir
-                  </div>
-                  <div className="text-[10px] text-slate-400 truncate">khurrammunir377@gmail.com</div>
-                </div>
-                <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 font-medium shrink-0">
-                  Google SSO
-                </span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => handleGoogleAuth('admin@nexora.pk', 'Muhammad Hamza Khan')}
-                className="w-full p-2.5 rounded-xl bg-slate-950/80 hover:bg-slate-800 border border-slate-800 hover:border-blue-500/50 flex items-center gap-3 transition-all text-left group"
-              >
-                <div className="w-8 h-8 rounded-full bg-blue-600 text-white font-bold flex items-center justify-center text-xs shrink-0 shadow-sm">
-                  HK
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="text-xs font-bold text-white group-hover:text-sky-400 truncate">
-                    Muhammad Hamza Khan (Super Admin)
-                  </div>
-                  <div className="text-[10px] text-slate-400 truncate">admin@nexora.pk</div>
-                </div>
-                <span className="text-[10px] px-2 py-0.5 rounded-full bg-blue-500/15 text-sky-400 font-medium shrink-0">
-                  Google SSO
-                </span>
-              </button>
-            </div>
-
             <div className="relative flex items-center justify-center my-4">
               <div className="border-t border-slate-800 w-full" />
               <span className="bg-slate-900 px-3 text-[10px] font-bold text-slate-500 uppercase tracking-wider relative">
-                Alternative: Emergency Admin Override
+                Or sign in with Corporate Credentials
               </span>
             </div>
           </div>
@@ -278,65 +210,6 @@ function LoginForm() {
               Sign In with Corporate Password
             </button>
           </form>
-
-          {/* Quick Demo Login Switcher */}
-          <div className="mt-6 pt-5 border-t border-slate-800">
-            <div className="flex items-center justify-between mb-3">
-              <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
-                Instant Demo Access (Click to Login)
-              </span>
-            </div>
-
-            <div className="grid grid-cols-2 gap-2">
-              <button
-                type="button"
-                onClick={() => handleQuickLogin('superadmin@nexora.pk')}
-                className="p-2.5 rounded-xl bg-slate-950 hover:bg-slate-800/80 border border-slate-800 hover:border-emerald-500/50 text-left transition-all group"
-              >
-                <div className="text-xs font-bold text-white group-hover:text-emerald-400 flex items-center justify-between">
-                  <span>Hamza Khan</span>
-                  <span className="text-[9px] px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-400 font-semibold">Super Admin</span>
-                </div>
-                <div className="text-[10px] text-slate-500">superadmin@nexora.pk</div>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => handleQuickLogin('hr@nexora.pk')}
-                className="p-2.5 rounded-xl bg-slate-950 hover:bg-slate-800/80 border border-slate-800 hover:border-indigo-500/50 text-left transition-all group"
-              >
-                <div className="text-xs font-bold text-white group-hover:text-indigo-400 flex items-center justify-between">
-                  <span>Fatima Tariq</span>
-                  <span className="text-[9px] px-1.5 py-0.5 rounded bg-indigo-500/20 text-indigo-400 font-semibold">HR Head</span>
-                </div>
-                <div className="text-[10px] text-slate-500">hr@nexora.pk</div>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => handleQuickLogin('finance@nexora.pk')}
-                className="p-2.5 rounded-xl bg-slate-950 hover:bg-slate-800/80 border border-slate-800 hover:border-sky-500/50 text-left transition-all group"
-              >
-                <div className="text-xs font-bold text-white group-hover:text-sky-400 flex items-center justify-between">
-                  <span>Bilal Ahmed</span>
-                  <span className="text-[9px] px-1.5 py-0.5 rounded bg-sky-500/20 text-sky-400 font-semibold">Finance VP</span>
-                </div>
-                <div className="text-[10px] text-slate-500">finance@nexora.pk</div>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => handleQuickLogin('sales@nexora.pk')}
-                className="p-2.5 rounded-xl bg-slate-950 hover:bg-slate-800/80 border border-slate-800 hover:border-amber-500/50 text-left transition-all group"
-              >
-                <div className="text-xs font-bold text-white group-hover:text-amber-400 flex items-center justify-between">
-                  <span>Ayesha Malik</span>
-                  <span className="text-[9px] px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-400 font-semibold">Sales Lead</span>
-                </div>
-                <div className="text-[10px] text-slate-500">sales@nexora.pk</div>
-              </button>
-            </div>
-          </div>
         </div>
 
         {/* Security Footer Notice */}
@@ -366,68 +239,65 @@ function LoginForm() {
               </div>
               <h3 className="text-lg font-bold text-slate-900">Sign in with Google</h3>
               <p className="text-xs text-slate-500 mt-1">
-                Choose an account to continue to <strong>Nexora ERP</strong>
+                Enter your Google Account or Workspace email to continue to <strong>Nexora ERP</strong>
               </p>
             </div>
 
-            <div className="space-y-2 mb-6">
-              {/* Account Option 1 */}
-              <button
-                type="button"
-                onClick={() => handleGoogleAuth('khurrammunir377@gmail.com', 'Khurram Munir')}
-                className="w-full p-3 rounded-2xl border border-slate-200 hover:border-blue-500 hover:bg-blue-50/50 flex items-center gap-3 transition-all text-left"
-              >
-                <div className="w-9 h-9 rounded-full bg-emerald-600 text-white font-bold flex items-center justify-center text-sm shadow-sm">
-                  KM
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="text-xs font-bold text-slate-900 truncate">Khurram Munir</div>
-                  <div className="text-[11px] text-slate-500 truncate">khurrammunir377@gmail.com</div>
-                </div>
-              </button>
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                if (customGoogleEmail.trim()) {
+                  handleGoogleAuth(
+                    customGoogleEmail.trim(),
+                    customGoogleName.trim() || customGoogleEmail.split('@')[0]
+                  );
+                }
+              }}
+              className="space-y-3.5"
+            >
+              <div>
+                <label className="block text-[11px] font-semibold text-slate-700 mb-1">
+                  Email or Workspace ID
+                </label>
+                <input
+                  type="email"
+                  placeholder="name@company.com or user@gmail.com"
+                  required
+                  autoFocus
+                  value={customGoogleEmail}
+                  onChange={(e) => setCustomGoogleEmail(e.target.value)}
+                  className="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-300 bg-white text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all placeholder-slate-400"
+                />
+              </div>
 
-              {/* Account Option 2 */}
-              <button
-                type="button"
-                onClick={() => handleGoogleAuth('admin@nexora.pk', 'Muhammad Hamza Khan')}
-                className="w-full p-3 rounded-2xl border border-slate-200 hover:border-blue-500 hover:bg-blue-50/50 flex items-center gap-3 transition-all text-left"
-              >
-                <div className="w-9 h-9 rounded-full bg-blue-600 text-white font-bold flex items-center justify-center text-sm shadow-sm">
-                  HK
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="text-xs font-bold text-slate-900 truncate">Muhammad Hamza Khan (Admin)</div>
-                  <div className="text-[11px] text-slate-500 truncate">admin@nexora.pk</div>
-                </div>
-              </button>
-            </div>
+              <div>
+                <label className="block text-[11px] font-semibold text-slate-700 mb-1">
+                  Full Name (Optional)
+                </label>
+                <input
+                  type="text"
+                  placeholder="e.g. Asad Ullah"
+                  value={customGoogleName}
+                  onChange={(e) => setCustomGoogleName(e.target.value)}
+                  className="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-300 bg-white text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all placeholder-slate-400"
+                />
+              </div>
 
-            {/* Custom Google Account Entry */}
-            <div className="border-t border-slate-100 pt-4 space-y-3">
-              <span className="text-[11px] font-semibold text-slate-500 block">Use another Google Account:</span>
-              <input
-                type="text"
-                placeholder="Full Name"
-                value={customGoogleName}
-                onChange={(e) => setCustomGoogleName(e.target.value)}
-                className="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-              <input
-                type="email"
-                placeholder="name@gmail.com or Google Workspace"
-                value={customGoogleEmail}
-                onChange={(e) => setCustomGoogleEmail(e.target.value)}
-                className="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-              <button
-                type="button"
-                disabled={!customGoogleEmail}
-                onClick={() => handleGoogleAuth(customGoogleEmail, customGoogleName || 'Google User')}
-                className="w-full py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 disabled:opacity-40 text-white font-bold text-xs transition-all shadow-sm"
-              >
-                Sign in with this Account
-              </button>
-            </div>
+              <div className="pt-2">
+                <button
+                  type="submit"
+                  disabled={!customGoogleEmail || isLoading}
+                  className="w-full py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 disabled:opacity-40 text-white font-bold text-xs transition-all shadow-md flex items-center justify-center gap-2"
+                >
+                  <GoogleIcon className="w-4 h-4 bg-white rounded-full p-0.5" />
+                  <span>Continue with Google</span>
+                </button>
+              </div>
+
+              <p className="text-[10px] text-center text-slate-400 pt-1">
+                Secured by Google Identity Services • 256-Bit SSL
+              </p>
+            </form>
           </div>
         </div>
       )}
