@@ -108,8 +108,8 @@ export const NexoraLogo: React.FC<NexoraLogoProps> = ({
                 <span className="text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)]">
                   NE
                 </span>
-                {/* User requested: X in DARK BLUE in same 3D ribbon style as emblem N */}
-                <span className="relative inline-block font-black bg-gradient-to-b from-[#38bdf8] via-[#1d4ed8] to-[#0a1931] bg-clip-text text-transparent drop-shadow-[0_2px_6px_rgba(15,23,42,0.95)] drop-shadow-[0_0_8px_rgba(29,78,216,0.6)]">
+                {/* User requested: X in high-visibility bright royal blue matching emblem */}
+                <span className="relative inline-block font-black text-blue-400 bg-gradient-to-b from-[#60a5fa] via-[#3b82f6] to-[#1d4ed8] bg-clip-text text-transparent drop-shadow-[0_0_12px_rgba(59,130,246,0.8)] drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)]">
                   X
                 </span>
                 {/* User requested: ORA in GREEN */}

@@ -34,20 +34,7 @@ export default function LandingPage() {
 
   return (
     <div className="min-h-screen bg-slate-900 text-slate-100 selection:bg-emerald-500 selection:text-white">
-      {/* 1. TOP ANNOUNCEMENT BANNER */}
-      <div className="bg-gradient-to-r from-emerald-600 via-teal-600 to-indigo-700 text-white text-xs py-2 px-4 text-center font-medium flex items-center justify-center gap-2">
-        <span className="bg-white/20 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider">
-          Pakistan FBR Compliant
-        </span>
-        <span>
-          Now fully integrated with <strong>FBR Digital Invoicing, Annexure-C Filing & EOBI Social Security</strong>
-        </span>
-        <Link href="/login" className="underline font-bold hover:text-emerald-100 hidden sm:inline">
-          Launch Live ERP Portal →
-        </Link>
-      </div>
-
-      {/* 2. NAVIGATION BAR */}
+      {/* NAVIGATION BAR */}
       <nav className="sticky top-0 z-50 backdrop-blur-md bg-slate-950/80 border-b border-slate-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           <NexoraLogo size="md" href="/" animated={true} />
@@ -78,8 +65,8 @@ export default function LandingPage() {
         </div>
       </nav>
 
-      {/* 3. HERO SECTION WITH WAVING PAKISTANI FLAG IN BACKGROUND */}
-      <section className="relative pt-24 pb-32 overflow-hidden">
+      {/* HERO SECTION WITH WAVING PAKISTANI FLAG IN BACKGROUND */}
+      <section className="relative pt-8 sm:pt-12 pb-24 sm:pb-32 overflow-hidden">
         {/* Full Waved Pakistani Flag - Light, Waving in Background */}
         <WavingPakistanFlag className="opacity-35" />
 
@@ -106,22 +93,6 @@ export default function LandingPage() {
             manage <strong>FBR Sales Tax Invoicing</strong>, <strong>EOBI &amp; PESSI Payroll</strong>,{' '}
             <strong>Multi-Godown Inventory</strong>, and <strong>1Link / Raast Banking</strong> from one secure cloud.
           </p>
-
-          <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Link
-              href="/login"
-              className="w-full sm:w-auto px-8 py-3.5 rounded-xl font-bold bg-emerald-500 hover:bg-emerald-400 text-slate-950 shadow-xl shadow-emerald-500/30 transition-all text-sm flex items-center justify-center gap-2"
-            >
-              <span>Launch Live ERP System</span>
-              <ArrowRight className="w-4 h-4" />
-            </Link>
-            <Link
-              href="/login"
-              className="w-full sm:w-auto px-8 py-3.5 rounded-xl font-semibold bg-slate-900/80 hover:bg-slate-800 text-white border border-slate-700/80 backdrop-blur-sm transition-all text-sm flex items-center justify-center gap-2"
-            >
-              <span>Employee &amp; Admin Sign In</span>
-            </Link>
-          </div>
 
           {/* Pakistan Trust Indicators */}
           <div className="mt-12 pt-8 border-t border-slate-800/80 flex flex-wrap items-center justify-center gap-8 sm:gap-12 text-slate-400 text-xs font-medium">
@@ -869,18 +840,19 @@ export default function LandingPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-6">
           <NexoraLogo size="sm" href="/" animated={false} />
 
-          <div className="flex flex-wrap items-center justify-center gap-6 text-slate-400">
+          <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-slate-400">
             <Link href="/dashboard" className="hover:text-white">ERP Dashboard</Link>
             <Link href="/hr/employees" className="hover:text-white">Employees</Link>
             <Link href="/sales/invoices" className="hover:text-white">FBR Invoices</Link>
             <Link href="/inventory/products" className="hover:text-white">Multi-Godown</Link>
-            <Link href="/reports" className="hover:text-white">Reports Center</Link>
-            <Link href="/settings" className="hover:text-white">Settings</Link>
+            <span className="inline-flex items-center gap-6 whitespace-nowrap">
+              <Link href="/reports" className="hover:text-white">Reports Center</Link>
+              <Link href="/settings" className="hover:text-white">Settings</Link>
+            </span>
           </div>
 
           <div className="text-center md:text-right text-slate-400">
-            <span>© {new Date().getFullYear()} Nexora Business Solutions (Pvt.) Ltd. All rights reserved.</span>{' '}
-            <span className="whitespace-nowrap font-semibold text-slate-200 inline-block">NTN:&nbsp;7492819&#8209;3</span>
+            <span>© {new Date().getFullYear()} Nexora Business Solutions (Pvt.) Ltd. All rights reserved.</span>
           </div>
         </div>
       </footer>
