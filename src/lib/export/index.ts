@@ -4,6 +4,7 @@ import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import * as XLSX from 'xlsx';
 import { Payslip, Invoice, Quotation, PurchaseOrder, CompanySettings } from '../types';
+import { NEXORA_LOGO_BASE64 } from './logoBase64';
 
 export function exportToCSV(data: Record<string, any>[], filename = 'export.csv') {
   if (!data || data.length === 0) return;
@@ -34,19 +35,28 @@ export function exportTableToPDF(
 ) {
   const doc = new jsPDF('p', 'pt', 'a4');
 
-  // Company Brand Header
-  doc.setFontSize(16);
-  doc.setTextColor(30, 41, 59);
-  doc.text(companyName, 40, 45);
+  // Official Nexora Emblem
+  try {
+    doc.addImage(NEXORA_LOGO_BASE64, 'PNG', 40, 24, 40, 35);
+  } catch (err) {
+    console.warn('PDF logo render skipped', err);
+  }
 
-  doc.setFontSize(11);
+  // Company Brand Header
+  doc.setFontSize(15);
+  doc.setTextColor(30, 41, 59);
+  doc.setFont('helvetica', 'bold');
+  doc.text(companyName, 88, 38);
+
+  doc.setFontSize(10);
   doc.setTextColor(100, 116, 139);
-  doc.text(title, 40, 65);
-  doc.text(`Generated: ${new Date().toLocaleString()}`, 40, 80);
+  doc.setFont('helvetica', 'normal');
+  doc.text(title, 88, 52);
+  doc.text(`Generated: ${new Date().toLocaleString()} (PKT) | NTN: 7492819-3`, 88, 65);
 
   // Table
   autoTable(doc, {
-    startY: 95,
+    startY: 85,
     columns: columns.map((col) => ({ header: col.header, dataKey: col.dataKey })),
     body: rows,
     theme: 'striped',
@@ -59,7 +69,7 @@ export function exportTableToPDF(
 }
 
 /**
- * Draws the official Pakistan Corporate Letterhead on the first page
+ * Draws the official Pakistan Corporate Letterhead on the first page with official Nexora Logo
  */
 function drawCorporateLetterhead(doc: jsPDF, title: string, docNumber: string, company: CompanySettings) {
   // Top Emerald Accent Stripe
@@ -70,27 +80,34 @@ function drawCorporateLetterhead(doc: jsPDF, title: string, docNumber: string, c
   doc.setFillColor(248, 250, 252);
   doc.rect(0, 8, 595, 95, 'F');
 
+  // Official 3D Nexora Logo Emblem
+  try {
+    doc.addImage(NEXORA_LOGO_BASE64, 'PNG', 40, 18, 50, 43);
+  } catch (err) {
+    console.warn('PDF logo render skipped', err);
+  }
+
   // Corporate Name
   doc.setTextColor(15, 23, 42);
-  doc.setFontSize(18);
+  doc.setFontSize(17);
   doc.setFont('helvetica', 'bold');
-  doc.text(company.companyName || 'Nexora Business Solutions (Pvt.) Ltd.', 40, 38);
+  doc.text(company.companyName || 'Nexora Business Solutions (Pvt.) Ltd.', 98, 36);
 
   // Corporate Address & Legal Bar
-  doc.setFontSize(8.5);
+  doc.setFontSize(8);
   doc.setFont('helvetica', 'normal');
   doc.setTextColor(71, 85, 105);
-  doc.text('Head Office: Level 14, Executive Tower, Dolmen City, Clifton Block 4, Karachi, Pakistan', 40, 52);
-  doc.text('Branches: MM Alam Road, Gulberg III, Lahore  •  Saudi Pak Tower, Blue Area, Islamabad', 40, 65);
+  doc.text('Head Office: Level 14, Executive Tower, Dolmen City, Clifton Block 4, Karachi, Pakistan', 98, 49);
+  doc.text('Branches: MM Alam Road, Gulberg III, Lahore  •  Saudi Pak Tower, Blue Area, Islamabad', 98, 61);
   
   // Tax Registration Bar (Bold NTN/STRN)
   doc.setFont('helvetica', 'bold');
   doc.setTextColor(1, 65, 28);
-  doc.text('NTN: 7492819-3   |   STRN: 3277876123456   |   SECP: 0189283-PK   |   FBR Active Taxpayer', 40, 79);
+  doc.text('NTN: 7492819-3   |   STRN: 3277876123456   |   SECP: 0189283-PK   |   FBR Active Taxpayer', 98, 74);
   
   doc.setFont('helvetica', 'normal');
   doc.setTextColor(100, 116, 139);
-  doc.text('UAN: +92 (21) 3587-9921   •   Email: accounts@nexora.pk   •   Web: https://nexora.pk', 40, 92);
+  doc.text('UAN: +92 (21) 3587-9921   •   Email: accounts@nexora.pk   •   Web: https://nexora.pk', 98, 86);
 
   // Horizontal Divider Line
   doc.setDrawColor(203, 213, 225);

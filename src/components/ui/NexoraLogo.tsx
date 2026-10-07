@@ -10,6 +10,7 @@ interface NexoraLogoProps {
   className?: string;
   animated?: boolean;
   variant?: 'auto' | 'light' | 'dark';
+  mode?: 'icon' | 'full';
 }
 
 export const NexoraLogo: React.FC<NexoraLogoProps> = ({
@@ -19,31 +20,36 @@ export const NexoraLogo: React.FC<NexoraLogoProps> = ({
   className = '',
   animated = true,
   variant = 'auto',
+  mode = 'icon',
 }) => {
   const sizeMap = {
     sm: {
-      box: 'w-8 h-8',
-      text: 'text-base',
-      sub: 'text-[9px]',
-      badge: 'text-[8px] px-1.5 py-0.5',
+      iconH: 'h-8',
+      text: 'text-lg',
+      sub: 'text-[8px] tracking-[0.2em]',
+      badge: 'text-[8px] px-1.5 py-0.2',
+      fullH: 'h-10',
     },
     md: {
-      box: 'w-10 h-10',
-      text: 'text-xl',
-      sub: 'text-[10px]',
+      iconH: 'h-10',
+      text: 'text-2xl',
+      sub: 'text-[9px] tracking-[0.22em]',
       badge: 'text-[9px] px-2 py-0.5',
+      fullH: 'h-12',
     },
     lg: {
-      box: 'w-14 h-14',
-      text: 'text-2xl sm:text-3xl',
-      sub: 'text-xs',
-      badge: 'text-[10px] px-2.5 py-1',
+      iconH: 'h-14',
+      text: 'text-3xl sm:text-4xl',
+      sub: 'text-[11px] tracking-[0.25em]',
+      badge: 'text-[10px] px-2.5 py-0.5',
+      fullH: 'h-20',
     },
     xl: {
-      box: 'w-20 h-20',
-      text: 'text-3xl sm:text-4xl',
-      sub: 'text-sm',
+      iconH: 'h-20',
+      text: 'text-4xl sm:text-5xl',
+      sub: 'text-xs tracking-[0.3em]',
       badge: 'text-xs px-3 py-1',
+      fullH: 'h-28',
     },
   };
 
@@ -54,72 +60,71 @@ export const NexoraLogo: React.FC<NexoraLogoProps> = ({
     variant === 'light'
       ? 'text-white'
       : variant === 'dark'
-      ? 'text-slate-900'
+      ? 'text-slate-950'
       : 'text-slate-900 dark:text-white';
 
   const subTextColor =
     variant === 'light'
       ? 'text-slate-300'
       : variant === 'dark'
-      ? 'text-slate-600'
+      ? 'text-slate-500'
       : 'text-slate-500 dark:text-slate-400';
 
-  const content = (
-    <div className={`inline-flex items-center gap-3 group select-none ${className}`}>
-      {/* 3D Glassmorphic Emblem Container */}
-      <div className="relative flex items-center justify-center">
-        {/* Animated Radial Plasma Aura */}
-        {animated && (
-          <div className="absolute -inset-1.5 rounded-2xl bg-gradient-to-r from-emerald-500/30 via-cyan-500/30 to-indigo-600/30 blur-md opacity-60 group-hover:opacity-100 transition duration-500 animate-pulse" />
-        )}
+  let content: React.ReactNode;
 
-        {/* Outer Metallic Bezel */}
-        <div
-          className={`${selected.box} relative rounded-2xl p-[1.5px] bg-gradient-to-br from-white/40 via-cyan-400/40 to-slate-900/60 shadow-xl shadow-cyan-950/20 group-hover:scale-105 transition-transform duration-300`}
-        >
-          {/* Inner Chamber */}
-          <div className="w-full h-full rounded-[14px] overflow-hidden bg-slate-950/90 backdrop-blur-md relative flex items-center justify-center ring-1 ring-white/15">
-            {/* Specular Highlight Sheen */}
-            <div className="absolute inset-0 bg-gradient-to-tr from-white/0 via-white/20 to-transparent pointer-events-none group-hover:translate-x-full transition-transform duration-700 ease-out" />
-
-            <img
-              src="/logo.png"
-              alt="Nexora 3D Corporate Logo"
-              className="w-full h-full object-contain p-1 drop-shadow-[0_4px_10px_rgba(16,185,129,0.3)] group-hover:rotate-2 transition-transform duration-300"
-            />
-          </div>
-        </div>
+  if (mode === 'full') {
+    content = (
+      <div className={`inline-flex items-center group select-none ${className}`}>
+        <img
+          src="/logo-transparent.png"
+          alt="Nexora Complete Business Management"
+          className={`${selected.fullH} w-auto object-contain drop-shadow-[0_4px_12px_rgba(0,145,254,0.25)] transition-transform duration-300 group-hover:scale-105`}
+        />
       </div>
+    );
+  } else {
+    content = (
+      <div className={`inline-flex items-center gap-3 group select-none ${className}`}>
+        {/* Transparent 3D Ribbon 'N' Emblem */}
+        <div className="relative flex items-center justify-center shrink-0">
+          {animated && (
+            <div className="absolute -inset-1 rounded-full bg-gradient-to-r from-blue-500/20 via-cyan-400/20 to-indigo-500/20 blur-md opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+          )}
+          <img
+            src="/logo-icon.png"
+            alt="Nexora 3D Emblem"
+            className={`${selected.iconH} w-auto object-contain drop-shadow-[0_8px_16px_rgba(0,145,254,0.3)] group-hover:scale-105 group-hover:rotate-1 transition-all duration-300`}
+          />
+        </div>
 
-      {/* Modern High-End Typographic Lockup */}
-      {showText && (
-        <div className="flex flex-col text-left">
-          <div className="flex items-center gap-2">
-            <span className={`font-black tracking-wider leading-none uppercase ${mainTextColor} ${selected.text}`}>
-              NEX
-              <span className="bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent">
-                O
+        {/* Corporate Typography Lockup */}
+        {showText && (
+          <div className="flex flex-col text-left justify-center">
+            <div className="flex items-center gap-2">
+              <span
+                className={`font-black font-sans tracking-wider leading-none uppercase ${mainTextColor} ${selected.text}`}
+              >
+                NE
+                <span className="bg-gradient-to-tr from-blue-600 via-sky-400 to-cyan-400 bg-clip-text text-transparent">
+                  X
+                </span>
+                ORA
               </span>
-              RA
-            </span>
+              <span className="font-mono font-bold tracking-widest text-[9px] px-1.5 py-0.5 rounded-full border border-sky-500/30 bg-sky-500/10 text-sky-400">
+                ERP
+              </span>
+            </div>
 
-            {/* Enterprise Micro-Badge */}
             <span
-              className={`font-mono font-bold tracking-widest rounded-full uppercase border border-emerald-500/40 bg-emerald-500/10 text-emerald-400 ${selected.badge}`}
+              className={`font-bold uppercase mt-1 leading-none ${subTextColor} ${selected.sub}`}
             >
-              ERP
+              Complete Business Management
             </span>
           </div>
-
-          <span
-            className={`font-semibold tracking-widest uppercase mt-1 leading-none ${subTextColor} ${selected.sub}`}
-          >
-            Complete Business Management
-          </span>
-        </div>
-      )}
-    </div>
-  );
+        )}
+      </div>
+    );
+  }
 
   if (href) {
     return (
