@@ -127,32 +127,48 @@ export default function DashboardPage() {
           value={totalEmployees}
           icon={<Users className="w-5 h-5" />}
           subtitle={`${activeEmployees} active • ${onLeaveEmployees} on leave`}
-          trend={{ value: '+8.4% YoY', positive: true }}
+          trend={{ value: '+8.4% YoY', positive: true, variant: 'success' }}
           colorScheme="indigo"
+          href="/hr/employees"
         />
         <StatCard
           title="YTD Realized Revenue"
           value={`Rs. ${(totalRevenue / 1000000).toFixed(2)}M`}
           icon={<Coins className="w-5 h-5" />}
           subtitle={`Rs. ${(outstandingInvoicesTotal / 1000).toFixed(0)}k outstanding`}
-          trend={{ value: '+14.2% MoM', positive: true }}
+          trend={{ value: '+14.2% MoM', positive: true, variant: 'success' }}
           colorScheme="emerald"
+          href="/sales/invoices"
         />
         <StatCard
           title="Pending Approvals"
           value={pendingApprovalsCount}
           icon={<FileCheck className="w-5 h-5" />}
-          subtitle="Leave, expenses, and POs awaiting sign-off"
-          trend={{ value: 'Action Required', positive: false }}
+          subtitle="Leave, claims &amp; PO authorizations"
+          trend={{ value: 'Action Required', positive: false, variant: 'warning' }}
           colorScheme="amber"
+          href="/hr/leave"
         />
         <StatCard
           title="Inventory Valuation"
-          value={`$${(inventoryValue / 1000).toFixed(1)}k`}
+          value={
+            inventoryValue >= 1000000
+              ? `Rs. ${(inventoryValue / 1000000).toFixed(2)}M`
+              : `Rs. ${(inventoryValue / 1000).toFixed(0)}k`
+          }
           icon={<Package className="w-5 h-5" />}
-          subtitle={`${lowStockProducts.length} items below minimum threshold`}
-          trend={{ value: `${lowStockProducts.length} Low Stock`, positive: lowStockProducts.length === 0 }}
+          subtitle={
+            lowStockProducts.length > 0
+              ? `${lowStockProducts.length} items below safety threshold`
+              : 'Multi-Godown storage across KHI, LHE & ISB'
+          }
+          trend={{
+            value: lowStockProducts.length === 0 ? 'Optimal Stock' : `${lowStockProducts.length} Critical Stock`,
+            positive: lowStockProducts.length === 0,
+            variant: lowStockProducts.length === 0 ? 'success' : 'danger',
+          }}
           colorScheme="rose"
+          href="/inventory/warehouses"
         />
       </div>
 
@@ -226,7 +242,7 @@ export default function DashboardPage() {
               <div key={e.id} className="p-3 rounded-lg border border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/30 flex items-center justify-between text-xs">
                 <div>
                   <div className="font-semibold text-slate-900 dark:text-slate-100">{e.employeeName}</div>
-                  <div className="text-slate-500">${e.amount.toFixed(2)} • {e.category}</div>
+                  <div className="text-slate-500">Rs. {e.amount.toLocaleString()} • {e.category}</div>
                 </div>
                 <Link href="/finance/expenses">
                   <Badge variant="warning">Review</Badge>
@@ -315,8 +331,28 @@ export default function DashboardPage() {
         >
           <div className="space-y-3">
             {lowStockProducts.length === 0 ? (
-              <div className="text-center py-8 text-xs text-slate-400">
-                All inventory items are currently above healthy stock thresholds.
+              <div className="py-7 px-4 rounded-xl border border-dashed border-emerald-300 dark:border-emerald-800/60 bg-emerald-50/50 dark:bg-emerald-950/20 text-center space-y-2.5">
+                <div className="w-9 h-9 mx-auto rounded-full bg-emerald-100 dark:bg-emerald-900/60 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shadow-xs">
+                  <CheckCircle className="w-5 h-5" />
+                </div>
+                <div>
+                  <div className="text-xs font-bold text-slate-900 dark:text-slate-100 flex items-center justify-center gap-1.5">
+                    <span>All Stock Levels Optimal</span>
+                    <span className="px-2 py-0.5 rounded-full text-[10px] bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 font-semibold border border-emerald-500/20">
+                      Healthy
+                    </span>
+                  </div>
+                  <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1 max-w-sm mx-auto">
+                    All warehouse SKU inventories are comfortably above safety thresholds. Zero stockouts detected.
+                  </p>
+                </div>
+                <Link
+                  href="/inventory/products"
+                  className="inline-flex items-center gap-1 text-xs font-semibold text-emerald-600 dark:text-emerald-400 hover:underline pt-1"
+                >
+                  <span>Reorder Threshold Settings</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </Link>
               </div>
             ) : (
               lowStockProducts.map((p) => (

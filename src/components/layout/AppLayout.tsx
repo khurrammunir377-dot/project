@@ -10,6 +10,7 @@ import { NexoraLogo } from '@/components/ui/NexoraLogo';
 
 function ERPProtectedShell({ children }: { children: React.ReactNode }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const { isAuthenticated, isHydrated } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
@@ -45,13 +46,26 @@ function ERPProtectedShell({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="min-h-screen bg-slate-50/60 dark:bg-slate-950 flex flex-col font-sans">
-      {/* Sidebar */}
-      <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+      {/* Sidebar with Desktop Icon Collapsibility */}
+      <Sidebar
+        isOpen={sidebarOpen}
+        onClose={() => setSidebarOpen(false)}
+        isCollapsed={isSidebarCollapsed}
+        onToggleCollapse={() => setIsSidebarCollapsed((prev) => !prev)}
+      />
 
-      {/* Main Area */}
-      <div className="lg:pl-64 flex flex-col flex-1 min-w-0">
+      {/* Main Area with dynamic padding-left */}
+      <div
+        className={`${
+          isSidebarCollapsed ? 'lg:pl-20' : 'lg:pl-64'
+        } flex flex-col flex-1 min-w-0 transition-all duration-300`}
+      >
         {/* Top Navigation */}
-        <TopNavbar onMenuClick={() => setSidebarOpen(true)} />
+        <TopNavbar
+          onMenuClick={() => setSidebarOpen(true)}
+          onToggleCollapse={() => setIsSidebarCollapsed((prev) => !prev)}
+          isSidebarCollapsed={isSidebarCollapsed}
+        />
 
         {/* Dynamic Content Container */}
         <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto">

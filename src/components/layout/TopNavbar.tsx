@@ -14,6 +14,15 @@ import {
   Check,
   X,
   ExternalLink,
+  Plus,
+  PanelLeftClose,
+  PanelLeftOpen,
+  Receipt,
+  FileText,
+  CheckSquare,
+  TrendingUp,
+  ShoppingCart,
+  UserPlus,
 } from 'lucide-react';
 import { useAuth } from '@/lib/auth/AuthContext';
 import { useERPStore } from '@/lib/store/StoreContext';
@@ -22,9 +31,15 @@ import Link from 'next/link';
 
 interface TopNavbarProps {
   onMenuClick: () => void;
+  onToggleCollapse?: () => void;
+  isSidebarCollapsed?: boolean;
 }
 
-export const TopNavbar: React.FC<TopNavbarProps> = ({ onMenuClick }) => {
+export const TopNavbar: React.FC<TopNavbarProps> = ({
+  onMenuClick,
+  onToggleCollapse,
+  isSidebarCollapsed = false,
+}) => {
   const {
     currentUser,
     users,
@@ -40,6 +55,7 @@ export const TopNavbar: React.FC<TopNavbarProps> = ({ onMenuClick }) => {
   const [isNotifOpen, setIsNotifOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [isBranchMenuOpen, setIsBranchMenuOpen] = useState(false);
+  const [isQuickAddOpen, setIsQuickAddOpen] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(false);
 
   const toggleDarkMode = () => {
@@ -59,8 +75,8 @@ export const TopNavbar: React.FC<TopNavbarProps> = ({ onMenuClick }) => {
   return (
     <>
       <header className="sticky top-0 z-30 h-16 bg-white dark:bg-slate-900 border-b border-slate-200/80 dark:border-slate-800 flex items-center justify-between px-4 sm:px-6">
-        {/* Left Section: Menu Toggle & Global Search Trigger */}
-        <div className="flex items-center gap-3">
+        {/* Left Section: Menu Toggle, Desktop Collapse & Global Search Trigger */}
+        <div className="flex items-center gap-2.5">
           <button
             onClick={onMenuClick}
             className="p-2 rounded-lg text-slate-500 hover:text-slate-900 hover:bg-slate-100 dark:hover:bg-slate-800 dark:hover:text-slate-200 lg:hidden"
@@ -68,13 +84,27 @@ export const TopNavbar: React.FC<TopNavbarProps> = ({ onMenuClick }) => {
             <Menu className="w-5 h-5" />
           </button>
 
+          {onToggleCollapse && (
+            <button
+              onClick={onToggleCollapse}
+              title={isSidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+              className="hidden lg:flex p-2 rounded-lg text-slate-500 hover:text-slate-900 hover:bg-slate-100 dark:hover:bg-slate-800 dark:hover:text-slate-200 transition-colors"
+            >
+              {isSidebarCollapsed ? (
+                <PanelLeftOpen className="w-4 h-4 text-emerald-500" />
+              ) : (
+                <PanelLeftClose className="w-4 h-4" />
+              )}
+            </button>
+          )}
+
           <button
             onClick={() => setIsSearchOpen(true)}
-            className="hidden sm:flex items-center gap-2.5 px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/60 text-slate-400 hover:border-slate-300 dark:hover:border-slate-700 transition-colors text-xs w-64 lg:w-80 justify-between"
+            className="hidden sm:flex items-center gap-2.5 px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/60 text-slate-400 hover:border-slate-300 dark:hover:border-slate-700 transition-colors text-xs w-56 lg:w-72 justify-between"
           >
             <span className="flex items-center gap-2">
               <Search className="w-3.5 h-3.5" />
-              <span>Search employees, invoices, tasks...</span>
+              <span>Search modules, items, records...</span>
             </span>
             <kbd className="px-1.5 py-0.5 rounded text-[10px] bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 font-mono text-slate-500 dark:text-slate-300">
               Ctrl+K
@@ -82,8 +112,78 @@ export const TopNavbar: React.FC<TopNavbarProps> = ({ onMenuClick }) => {
           </button>
         </div>
 
-        {/* Right Section: Branch, Role Switcher, Dark Mode, Notifications, User Menu */}
+        {/* Right Section: Quick Add, Branch, Role Switcher, Dark Mode, Notifications, User Menu */}
         <div className="flex items-center gap-2 sm:gap-3">
+          {/* Quick Add Action Menu (+) */}
+          <div className="relative">
+            <button
+              onClick={() => setIsQuickAddOpen(!isQuickAddOpen)}
+              title="Quick Add Action"
+              className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white font-semibold text-xs shadow-sm shadow-indigo-600/30 transition-all"
+            >
+              <Plus className="w-4 h-4 stroke-[2.5]" />
+              <span className="hidden md:inline">Quick Add</span>
+            </button>
+
+            {isQuickAddOpen && (
+              <div className="absolute right-0 mt-2 w-56 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xl py-2 z-50 animate-in fade-in zoom-in-95 duration-150">
+                <div className="px-3 py-1 border-b border-slate-100 dark:border-slate-800 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+                  Quick Action Launcher
+                </div>
+                <div className="py-1 space-y-0.5">
+                  <Link
+                    href="/sales/invoices"
+                    onClick={() => setIsQuickAddOpen(false)}
+                    className="flex items-center gap-2.5 px-3 py-2 text-xs text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-indigo-600 transition-colors"
+                  >
+                    <Receipt className="w-4 h-4 text-indigo-500" />
+                    <span>New Sales Invoice</span>
+                  </Link>
+                  <Link
+                    href="/sales/quotations"
+                    onClick={() => setIsQuickAddOpen(false)}
+                    className="flex items-center gap-2.5 px-3 py-2 text-xs text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-indigo-600 transition-colors"
+                  >
+                    <FileText className="w-4 h-4 text-sky-500" />
+                    <span>Commercial Quotation</span>
+                  </Link>
+                  <Link
+                    href="/tasks"
+                    onClick={() => setIsQuickAddOpen(false)}
+                    className="flex items-center gap-2.5 px-3 py-2 text-xs text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-indigo-600 transition-colors"
+                  >
+                    <CheckSquare className="w-4 h-4 text-emerald-500" />
+                    <span>Create Task</span>
+                  </Link>
+                  <Link
+                    href="/crm/leads"
+                    onClick={() => setIsQuickAddOpen(false)}
+                    className="flex items-center gap-2.5 px-3 py-2 text-xs text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-indigo-600 transition-colors"
+                  >
+                    <TrendingUp className="w-4 h-4 text-amber-500" />
+                    <span>New Sales Lead</span>
+                  </Link>
+                  <Link
+                    href="/inventory/procurement"
+                    onClick={() => setIsQuickAddOpen(false)}
+                    className="flex items-center gap-2.5 px-3 py-2 text-xs text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-indigo-600 transition-colors"
+                  >
+                    <ShoppingCart className="w-4 h-4 text-purple-500" />
+                    <span>Purchase Order (PO)</span>
+                  </Link>
+                  <Link
+                    href="/hr/employees"
+                    onClick={() => setIsQuickAddOpen(false)}
+                    className="flex items-center gap-2.5 px-3 py-2 text-xs text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-indigo-600 transition-colors"
+                  >
+                    <UserPlus className="w-4 h-4 text-teal-500" />
+                    <span>Onboard Employee</span>
+                  </Link>
+                </div>
+              </div>
+            )}
+          </div>
+
           {/* Branch Switcher */}
           <div className="relative">
             <button
