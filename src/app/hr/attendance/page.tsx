@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Clock, CheckCircle2, AlertCircle, Plus, Calendar, UserCheck } from 'lucide-react';
+import { Clock, CheckCircle2, AlertCircle, Plus, Calendar, UserCheck, LogOut } from 'lucide-react';
 import { useERPStore } from '@/lib/store/StoreContext';
 import { useAuth } from '@/lib/auth/AuthContext';
 import { DataTable, Column } from '@/components/ui/DataTable';
@@ -14,9 +14,67 @@ import { StatCard } from '@/components/ui/StatCard';
 import { AttendanceRecord } from '@/lib/types';
 
 export default function AttendancePage() {
-  const { state, addAttendance, logAudit } = useERPStore();
+  const { state, addAttendance, updateAttendance, logAudit } = useERPStore();
   const { currentUser } = useAuth();
   const [isManualModalOpen, setIsManualModalOpen] = useState(false);
+
+  const todayStr = new Date().toISOString().split('T')[0];
+  const todayRecord = state.attendance.find(
+    (a) => a.date === todayStr && (a.employeeName === currentUser.name || a.employeeId === currentUser.employeeId)
+  );
+
+  const formatTime = (date: Date) => {
+    return date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
+  };
+
+  const handleQuickClockIn = () => {
+    const now = new Date();
+    const timeStr = formatTime(now);
+    const isLate = now.getHours() > 9 || (now.getHours() === 9 && now.getMinutes() > 30);
+    const status: AttendanceRecord['status'] = isLate ? 'Late' : 'Present';
+
+    addAttendance({
+      employeeId: currentUser.employeeId || 'NEX-001',
+      employeeName: currentUser.name,
+      department: currentUser.jobTitle ? currentUser.jobTitle.split(' ')[0] : 'Administration',
+      date: todayStr,
+      clockIn: timeStr,
+      breakDurationMinutes: 0,
+      workingHours: 0,
+      overtimeHours: 0,
+      status: status,
+      approved: true,
+    });
+
+    logAudit(
+      'Web Punch Clock-In',
+      'attendance',
+      `${currentUser.name} punched in at ${timeStr} (${status})`,
+      currentUser.name,
+      currentUser.id
+    );
+  };
+
+  const handleQuickClockOut = () => {
+    if (!todayRecord) return;
+    const now = new Date();
+    const timeStr = formatTime(now);
+    const workedHours = 8.0;
+
+    updateAttendance({
+      ...todayRecord,
+      clockOut: timeStr,
+      workingHours: workedHours,
+    });
+
+    logAudit(
+      'Web Punch Clock-Out',
+      'attendance',
+      `${currentUser.name} punched out at ${timeStr} (${workedHours} hrs logged)`,
+      currentUser.name,
+      currentUser.id
+    );
+  };
 
   const [manualForm, setManualForm] = useState({
     employeeName: currentUser.name,
@@ -130,6 +188,74 @@ export default function AttendancePage() {
         <Button onClick={() => setIsManualModalOpen(true)} icon={<Plus className="w-4 h-4" />}>
           Manual Entry Adjustment
         </Button>
+      </div>
+
+      {/* 1-Click Interactive Web Punch Terminal Card */}
+      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-slate-900 via-slate-850 to-slate-900 border border-slate-800 p-5 sm:p-6 shadow-xl shadow-black/40">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 rounded-2xl bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-emerald-400 shrink-0 shadow-[0_0_15px_rgba(16,185,129,0.25)]">
+              <Clock className="w-6 h-6 animate-pulse" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="text-[10px] font-mono uppercase tracking-wider text-emerald-400 font-bold bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">
+                  Live Attendance Terminal
+                </span>
+                <span className="text-xs text-slate-400">
+                  • {new Date().toLocaleDateString('en-PK', { weekday: 'long', year: 'numeric', month: 'short', day: 'numeric' })}
+                </span>
+              </div>
+              <h2 className="text-base sm:text-lg font-bold text-white mt-1">
+                {currentUser.name}
+              </h2>
+              <div className="text-xs text-slate-400 mt-0.5">
+                {todayRecord ? (
+                  todayRecord.clockOut ? (
+                    <span className="text-emerald-400 font-medium flex items-center gap-1.5">
+                      <CheckCircle2 className="w-4 h-4" />
+                      <span>Shift completed: Clocked In at {todayRecord.clockIn} • Clocked Out at {todayRecord.clockOut} ({todayRecord.workingHours} hrs)</span>
+                    </span>
+                  ) : (
+                    <span className="text-amber-400 font-medium flex items-center gap-1.5">
+                      <span className="w-2 h-2 rounded-full bg-amber-400 animate-ping" />
+                      <span>Active Session: Clocked in today at {todayRecord.clockIn}</span>
+                    </span>
+                  )
+                ) : (
+                  <span>You have not marked attendance yet today. Click &quot;Clock In Now&quot; to register your punch.</span>
+                )}
+              </div>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-3">
+            {!todayRecord ? (
+              <Button
+                variant="primary"
+                onClick={handleQuickClockIn}
+                className="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold shadow-lg shadow-emerald-500/30 px-5 py-2.5 rounded-xl flex items-center gap-2"
+              >
+                <CheckCircle2 className="w-4 h-4" />
+                <span>Clock In Now</span>
+              </Button>
+            ) : !todayRecord.clockOut ? (
+              <Button
+                variant="danger"
+                onClick={handleQuickClockOut}
+                className="bg-rose-600 hover:bg-rose-500 text-white font-bold shadow-lg shadow-rose-600/30 px-5 py-2.5 rounded-xl flex items-center gap-2"
+              >
+                <LogOut className="w-4 h-4" />
+                <span>Clock Out</span>
+              </Button>
+            ) : (
+              <div className="px-4 py-2 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 text-xs font-bold flex items-center gap-2">
+                <CheckCircle2 className="w-4 h-4" />
+                <span>Shift Done</span>
+              </div>
+            )}
+          </div>
+        </div>
       </div>
 
       {/* KPI Cards */}
