@@ -29,11 +29,21 @@ import { Button } from '@/components/ui/Button';
 import { RevenueChart } from '@/components/charts/RevenueChart';
 import { AttendanceChart } from '@/components/charts/AttendanceChart';
 import { DepartmentPieChart } from '@/components/charts/DepartmentPieChart';
+import { AttendanceRecord } from '@/lib/types';
 
 export default function DashboardPage() {
-  const { state, addAttendance } = useERPStore();
+  const { state, addAttendance, updateAttendance, logAudit } = useERPStore();
   const { currentUser, currentBranch } = useAuth();
-  const [clockedIn, setClockedIn] = useState(false);
+
+  const todayStr = new Date().toISOString().split('T')[0];
+  const todayRecord = state.attendance.find(
+    (a) =>
+      a.date === todayStr &&
+      (a.employeeId === currentUser.employeeId || a.employeeName === currentUser.name)
+  );
+
+  const isClockedIn = Boolean(todayRecord && !todayRecord.clockOut);
+  const isCompleted = Boolean(todayRecord && todayRecord.clockOut);
 
   // Calculations
   const totalEmployees = state.employees.length;
@@ -57,22 +67,46 @@ export default function DashboardPage() {
   const inventoryValue = state.products.reduce((acc, p) => acc + p.stock * p.costPrice, 0);
 
   const handleQuickClock = () => {
-    if (!clockedIn) {
+    const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    if (!todayRecord) {
+      const now = new Date();
+      const isLate = now.getHours() > 9 || (now.getHours() === 9 && now.getMinutes() > 30);
+      const status: AttendanceRecord['status'] = isLate ? 'Late' : 'Present';
+
       addAttendance({
-        employeeId: currentUser.employeeId,
+        employeeId: currentUser.employeeId || 'NEX-001',
         employeeName: currentUser.name,
-        department: 'Executive & Admin',
-        date: new Date().toISOString().split('T')[0],
-        clockIn: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        department: currentUser.jobTitle ? currentUser.jobTitle.split(' ')[0] : 'Executive & Admin',
+        date: todayStr,
+        clockIn: timeStr,
         breakDurationMinutes: 0,
         workingHours: 0,
         overtimeHours: 0,
-        status: 'Present',
+        status,
         approved: true,
       });
-      setClockedIn(true);
-    } else {
-      setClockedIn(false);
+
+      logAudit(
+        'Quick Clock-In',
+        'dashboard',
+        `${currentUser.name} clocked in at ${timeStr} (${status})`,
+        currentUser.name,
+        currentUser.id
+      );
+    } else if (!todayRecord.clockOut) {
+      updateAttendance({
+        ...todayRecord,
+        clockOut: timeStr,
+        workingHours: 8.0,
+      });
+
+      logAudit(
+        'Quick Clock-Out',
+        'dashboard',
+        `${currentUser.name} clocked out at ${timeStr}`,
+        currentUser.name,
+        currentUser.id
+      );
     }
   };
 
@@ -98,14 +132,23 @@ export default function DashboardPage() {
         <div className="flex items-center gap-2.5 relative z-10 flex-wrap">
           <button
             onClick={handleQuickClock}
+            disabled={isCompleted}
             className={`px-4 py-2 rounded-xl text-xs font-semibold flex items-center gap-2 transition-all shadow-md ${
-              clockedIn
-                ? 'bg-rose-600 hover:bg-rose-700 text-white shadow-rose-900/40'
-                : 'bg-emerald-500 hover:bg-emerald-600 text-white shadow-emerald-900/40'
+              isCompleted
+                ? 'bg-emerald-600/25 text-emerald-300 border border-emerald-500/30 cursor-default'
+                : isClockedIn
+                ? 'bg-rose-600 hover:bg-rose-700 text-white shadow-rose-900/40 ring-2 ring-rose-500/50'
+                : 'bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold shadow-emerald-900/40'
             }`}
           >
             <Clock className="w-4 h-4" />
-            <span>{clockedIn ? 'Clock Out (Active)' : 'Quick Clock In'}</span>
+            <span>
+              {todayRecord && isCompleted
+                ? `Shift Done (${todayRecord.clockIn} - ${todayRecord.clockOut})`
+                : todayRecord && isClockedIn
+                ? `Clock Out (Active: ${todayRecord.clockIn})`
+                : 'Quick Clock In'}
+            </span>
           </button>
           <Link href="/hr/employees">
             <Button variant="outline" size="sm" className="bg-white/10 hover:bg-white/20 text-white border-white/20">
