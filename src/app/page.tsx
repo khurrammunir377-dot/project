@@ -25,12 +25,15 @@ import {
   Lock,
   Globe,
   TrendingUp,
+  Menu,
+  X,
 } from 'lucide-react';
 import { NexoraLogo } from '@/components/ui/NexoraLogo';
 import { WavingPakistanFlag } from '@/components/ui/WavingPakistanFlag';
 
 export default function LandingPage() {
   const [billingCycle, setBillingCycle] = useState<'monthly' | 'annual'>('annual');
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
     <div className="min-h-screen bg-slate-900 text-slate-100 selection:bg-emerald-500 selection:text-white">
@@ -56,13 +59,72 @@ export default function LandingPage() {
             </Link>
             <Link
               href="/login"
-              className="px-4 py-2 rounded-xl text-xs font-bold bg-emerald-500 hover:bg-emerald-400 text-slate-950 shadow-md shadow-emerald-500/20 transition-all flex items-center gap-1.5"
+              className="px-3.5 sm:px-4 py-2 rounded-xl text-xs font-bold bg-emerald-500 hover:bg-emerald-400 text-slate-950 shadow-md shadow-emerald-500/20 transition-all flex items-center gap-1.5"
             >
-              <span>Launch ERP Portal</span>
+              <span>Launch ERP</span>
               <ArrowRight className="w-3.5 h-3.5" />
             </Link>
+
+            {/* Mobile Navigation Toggle Button */}
+            <button
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="p-2 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800/80 transition-colors lg:hidden"
+              aria-label="Toggle navigation menu"
+            >
+              {mobileMenuOpen ? <X className="w-5 h-5 text-emerald-400" /> : <Menu className="w-5 h-5" />}
+            </button>
           </div>
         </div>
+
+        {/* Mobile Dropdown Menu Drawer */}
+        {mobileMenuOpen && (
+          <div className="lg:hidden border-t border-slate-800/90 bg-slate-950/95 backdrop-blur-xl px-4 py-4 space-y-2 animate-in fade-in slide-in-from-top-2 duration-200">
+            <a
+              href="#modules"
+              onClick={() => setMobileMenuOpen(false)}
+              className="block px-3 py-2.5 rounded-xl text-sm font-semibold text-slate-200 hover:bg-slate-800/80 hover:text-emerald-400 transition-colors"
+            >
+              ERP Modules
+            </a>
+            <a
+              href="#compliance"
+              onClick={() => setMobileMenuOpen(false)}
+              className="block px-3 py-2.5 rounded-xl text-sm font-semibold text-slate-200 hover:bg-slate-800/80 hover:text-emerald-400 transition-colors"
+            >
+              FBR & EOBI Compliance
+            </a>
+            <a
+              href="#locations"
+              onClick={() => setMobileMenuOpen(false)}
+              className="block px-3 py-2.5 rounded-xl text-sm font-semibold text-slate-200 hover:bg-slate-800/80 hover:text-emerald-400 transition-colors"
+            >
+              Offices (KHI • LHE • ISB)
+            </a>
+            <a
+              href="#pricing"
+              onClick={() => setMobileMenuOpen(false)}
+              className="block px-3 py-2.5 rounded-xl text-sm font-semibold text-slate-200 hover:bg-slate-800/80 hover:text-emerald-400 transition-colors"
+            >
+              Pricing (PKR)
+            </a>
+            <a
+              href="#faq"
+              onClick={() => setMobileMenuOpen(false)}
+              className="block px-3 py-2.5 rounded-xl text-sm font-semibold text-slate-200 hover:bg-slate-800/80 hover:text-emerald-400 transition-colors"
+            >
+              Frequently Asked Questions
+            </a>
+            <div className="pt-3 border-t border-slate-800/80 flex flex-col gap-2">
+              <Link
+                href="/login"
+                onClick={() => setMobileMenuOpen(false)}
+                className="w-full py-2.5 rounded-xl text-xs font-bold text-center text-slate-200 bg-slate-800 hover:bg-slate-700 transition-colors"
+              >
+                Employee &amp; Admin Sign In
+              </Link>
+            </div>
+          </div>
+        )}
       </nav>
 
       {/* HERO SECTION WITH WAVING PAKISTANI FLAG IN BACKGROUND */}

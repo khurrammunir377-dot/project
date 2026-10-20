@@ -100,6 +100,14 @@ export const TopNavbar: React.FC<TopNavbarProps> = ({
 
           <button
             onClick={() => setIsSearchOpen(true)}
+            title="Search records and modules"
+            className="sm:hidden p-2 rounded-lg text-slate-500 hover:text-slate-900 hover:bg-slate-100 dark:hover:bg-slate-800 dark:hover:text-slate-200 transition-colors"
+          >
+            <Search className="w-4 h-4" />
+          </button>
+
+          <button
+            onClick={() => setIsSearchOpen(true)}
             className="hidden sm:flex items-center gap-2.5 px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/60 text-slate-400 hover:border-slate-300 dark:hover:border-slate-700 transition-colors text-xs w-56 lg:w-72 justify-between"
           >
             <span className="flex items-center gap-2">
@@ -126,7 +134,7 @@ export const TopNavbar: React.FC<TopNavbarProps> = ({
             </button>
 
             {isQuickAddOpen && (
-              <div className="absolute right-0 mt-2 w-56 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xl py-2 z-50 animate-in fade-in zoom-in-95 duration-150">
+              <div className="absolute right-0 mt-2 w-56 max-w-[calc(100vw-2rem)] rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xl py-2 z-50 animate-in fade-in zoom-in-95 duration-150">
                 <div className="px-3 py-1 border-b border-slate-100 dark:border-slate-800 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
                   Quick Action Launcher
                 </div>
@@ -196,7 +204,7 @@ export const TopNavbar: React.FC<TopNavbarProps> = ({
             </button>
 
             {isBranchMenuOpen && (
-              <div className="absolute right-0 mt-2 w-56 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xl py-1.5 z-50">
+              <div className="absolute right-0 mt-2 w-56 max-w-[calc(100vw-2rem)] rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xl py-1.5 z-50">
                 <div className="px-3 py-1 text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
                   Select Active Branch
                 </div>
@@ -233,7 +241,7 @@ export const TopNavbar: React.FC<TopNavbarProps> = ({
             </button>
 
             {isUserMenuOpen && (
-              <div className="absolute right-0 mt-2 w-72 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xl py-2 z-50">
+              <div className="absolute right-0 mt-2 w-72 max-w-[calc(100vw-2rem)] rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xl py-2 z-50">
                 <div className="px-3.5 pb-2 border-b border-slate-100 dark:border-slate-800">
                   <div className="text-[11px] font-semibold uppercase tracking-wider text-slate-400">
                     Switch Persona / Role
@@ -302,7 +310,7 @@ export const TopNavbar: React.FC<TopNavbarProps> = ({
             </button>
 
             {isNotifOpen && (
-              <div className="absolute right-0 mt-2 w-80 sm:w-96 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xl z-50 overflow-hidden">
+              <div className="fixed sm:absolute right-3 sm:right-0 left-3 sm:left-auto mt-2 sm:w-96 max-w-sm rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xl z-50 overflow-hidden">
                 <div className="px-4 py-3 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <h4 className="text-sm font-bold text-slate-900 dark:text-slate-100">

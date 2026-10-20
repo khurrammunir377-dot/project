@@ -34,6 +34,8 @@ import {
   X,
   PanelLeftClose,
   PanelLeftOpen,
+  Building,
+  Check,
 } from 'lucide-react';
 import { useAuth } from '@/lib/auth/AuthContext';
 import { NexoraLogo } from '@/components/ui/NexoraLogo';
@@ -317,7 +319,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
   onToggleCollapse,
 }) => {
   const pathname = usePathname();
-  const { currentUser, isSuperAdmin } = useAuth();
+  const { currentUser, isSuperAdmin, currentBranch, branches, setCurrentBranch } = useAuth();
   const isAdmin = isSuperAdmin || currentUser?.role === 'Company Admin';
   const [collapsedSections, setCollapsedSections] = useState<Record<string, boolean>>({});
 
@@ -339,7 +341,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
       <aside
         className={`fixed top-0 bottom-0 left-0 z-40 bg-slate-900 text-slate-300 flex flex-col transition-all duration-300 ease-in-out border-r border-slate-800 ${
           isCollapsed ? 'lg:w-20' : 'lg:w-64'
-        } w-64 ${
+        } w-72 max-w-[85vw] ${
           isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
         }`}
       >
@@ -377,11 +379,36 @@ export const Sidebar: React.FC<SidebarProps> = ({
             {/* Mobile Close Button */}
             <button
               onClick={onClose}
-              className="lg:hidden p-1 rounded-md text-slate-400 hover:text-white"
+              className="lg:hidden p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
             >
               <X className="w-5 h-5" />
             </button>
           </div>
+        </div>
+
+        {/* Mobile Branch Switcher Banner (lg:hidden) */}
+        <div className="lg:hidden px-3 py-2.5 bg-slate-950/90 border-b border-slate-800">
+          <div className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider mb-1 flex items-center justify-between">
+            <span className="flex items-center gap-1">
+              <Building2 className="w-3.5 h-3.5 text-indigo-400" />
+              <span>Active Branch</span>
+            </span>
+            <span className="text-[10px] font-mono text-emerald-400 font-semibold">{currentBranch.code}</span>
+          </div>
+          <select
+            value={currentBranch.id}
+            onChange={(e) => {
+              const b = branches.find((item) => item.id === e.target.value);
+              if (b) setCurrentBranch(b);
+            }}
+            className="w-full bg-slate-900 border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-white font-medium focus:outline-none focus:ring-1 focus:ring-indigo-500"
+          >
+            {branches.map((b) => (
+              <option key={b.id} value={b.id} className="bg-slate-900 text-white">
+                {b.name} ({b.code})
+              </option>
+            ))}
+          </select>
         </div>
 
         {/* Scrollable Navigation Items */}

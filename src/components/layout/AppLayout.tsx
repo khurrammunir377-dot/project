@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import { Sidebar } from './Sidebar';
 import { TopNavbar } from './TopNavbar';
+import { MobileBottomNav } from './MobileBottomNav';
 import { StoreProvider } from '@/lib/store/StoreContext';
 import { AuthProvider, useAuth } from '@/lib/auth/AuthContext';
 import { NexoraLogo } from '@/components/ui/NexoraLogo';
@@ -68,9 +69,12 @@ function ERPProtectedShell({ children }: { children: React.ReactNode }) {
         />
 
         {/* Dynamic Content Container */}
-        <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto">
+        <main className="flex-1 p-3.5 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto min-w-0 pb-24 lg:pb-8">
           {children}
         </main>
+
+        {/* Mobile Fixed Bottom Navigation Bar */}
+        <MobileBottomNav onOpenMenu={() => setSidebarOpen(true)} />
       </div>
     </div>
   );

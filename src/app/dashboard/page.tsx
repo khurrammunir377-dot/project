@@ -113,14 +113,14 @@ export default function DashboardPage() {
   return (
     <div className="space-y-6">
       {/* Welcome Banner */}
-      <div className="bg-gradient-to-r from-indigo-900 via-indigo-800 to-slate-900 rounded-2xl p-6 text-white shadow-lg relative overflow-hidden flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="bg-gradient-to-r from-indigo-900 via-indigo-800 to-slate-900 rounded-2xl p-4 sm:p-6 text-white shadow-lg relative overflow-hidden flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="relative z-10">
           <div className="flex items-center gap-2 text-indigo-300 text-xs font-semibold uppercase tracking-wider">
             <span>{currentBranch.name}</span>
             <span>•</span>
             <span>Fiscal Year 2026</span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight mt-1">
+          <h1 className="text-xl sm:text-3xl font-extrabold tracking-tight mt-1">
             Welcome back, {currentUser.name}
           </h1>
           <p className="text-slate-300 text-xs sm:text-sm mt-1 max-w-xl">
@@ -129,11 +129,11 @@ export default function DashboardPage() {
           </p>
         </div>
 
-        <div className="flex items-center gap-2.5 relative z-10 flex-wrap">
+        <div className="flex items-center gap-2 sm:gap-2.5 relative z-10 flex-wrap w-full md:w-auto">
           <button
             onClick={handleQuickClock}
             disabled={isCompleted}
-            className={`px-4 py-2 rounded-xl text-xs font-semibold flex items-center gap-2 transition-all shadow-md ${
+            className={`px-4 py-2.5 sm:py-2 rounded-xl text-xs font-semibold flex items-center justify-center gap-2 transition-all shadow-md w-full sm:w-auto ${
               isCompleted
                 ? 'bg-emerald-600/25 text-emerald-300 border border-emerald-500/30 cursor-default'
                 : isClockedIn
@@ -150,16 +150,18 @@ export default function DashboardPage() {
                 : 'Quick Clock In'}
             </span>
           </button>
-          <Link href="/hr/employees">
-            <Button variant="outline" size="sm" className="bg-white/10 hover:bg-white/20 text-white border-white/20">
-              <Users className="w-3.5 h-3.5 mr-1" /> Directory
-            </Button>
-          </Link>
-          <Link href="/sales/invoices">
-            <Button variant="outline" size="sm" className="bg-white/10 hover:bg-white/20 text-white border-white/20">
-              <CreditCard className="w-3.5 h-3.5 mr-1" /> New Invoice
-            </Button>
-          </Link>
+          <div className="flex items-center gap-2 w-full sm:w-auto">
+            <Link href="/hr/employees" className="flex-1 sm:flex-initial">
+              <Button variant="outline" size="sm" className="w-full bg-white/10 hover:bg-white/20 text-white border-white/20 justify-center">
+                <Users className="w-3.5 h-3.5 mr-1" /> Directory
+              </Button>
+            </Link>
+            <Link href="/sales/invoices" className="flex-1 sm:flex-initial">
+              <Button variant="outline" size="sm" className="w-full bg-white/10 hover:bg-white/20 text-white border-white/20 justify-center">
+                <CreditCard className="w-3.5 h-3.5 mr-1" /> New Invoice
+              </Button>
+            </Link>
+          </div>
         </div>
       </div>
 

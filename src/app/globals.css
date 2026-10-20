@@ -83,3 +83,19 @@ body {
   will-change: transform;
 }
 
+/* Mobile & Touch Optimizations */
+@media screen and (max-width: 768px) {
+  /* Prevent annoying iOS Safari auto-zoom on form inputs */
+  input:not([type="checkbox"]):not([type="radio"]),
+  select,
+  textarea {
+    font-size: 16px !important;
+  }
+}
+
+/* Smooth momentum scrolling on mobile touch devices */
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+

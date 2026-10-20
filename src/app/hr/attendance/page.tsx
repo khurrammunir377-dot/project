@@ -229,12 +229,12 @@ export default function AttendancePage() {
             </div>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 w-full md:w-auto">
             {!todayRecord ? (
               <Button
                 variant="primary"
                 onClick={handleQuickClockIn}
-                className="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold shadow-lg shadow-emerald-500/30 px-5 py-2.5 rounded-xl flex items-center gap-2"
+                className="w-full sm:w-auto justify-center bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold shadow-lg shadow-emerald-500/30 px-5 py-2.5 rounded-xl flex items-center gap-2"
               >
                 <CheckCircle2 className="w-4 h-4" />
                 <span>Clock In Now</span>
@@ -243,13 +243,13 @@ export default function AttendancePage() {
               <Button
                 variant="danger"
                 onClick={handleQuickClockOut}
-                className="bg-rose-600 hover:bg-rose-500 text-white font-bold shadow-lg shadow-rose-600/30 px-5 py-2.5 rounded-xl flex items-center gap-2"
+                className="w-full sm:w-auto justify-center bg-rose-600 hover:bg-rose-500 text-white font-bold shadow-lg shadow-rose-600/30 px-5 py-2.5 rounded-xl flex items-center gap-2"
               >
                 <LogOut className="w-4 h-4" />
                 <span>Clock Out</span>
               </Button>
             ) : (
-              <div className="px-4 py-2 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 text-xs font-bold flex items-center gap-2">
+              <div className="w-full sm:w-auto justify-center px-4 py-2.5 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 text-xs font-bold flex items-center gap-2">
                 <CheckCircle2 className="w-4 h-4" />
                 <span>Shift Done</span>
               </div>
